@@ -1,0 +1,60 @@
+/* ============================================================
+   THEME — the single source of truth for colour, type & motion
+   ============================================================
+   Palette story: the two tools Rajan lives in.
+     • After Effects  → deep indigo + lavender  (the interface)
+     • Blender        → warm orange             (the thing that moves)
+   Lavender is used for interaction (focus, links, active states).
+   Ember is reserved for motion: playheads, the ball, key moments.
+
+   Colours are stored as "R G B" triplets so Tailwind can apply
+   opacity (e.g. bg-lav/20). Change a value here → whole site updates.
+   ============================================================ */
+
+@font-face {
+  font-family: "NeueMachina";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/NeueMachina-Regular.woff2") format("woff2"),
+    url("/fonts/NeueMachina-Regular.woff") format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-family: "NeueMachina";
+  font-weight: 500 700;
+  font-style: normal;
+  src: url("/fonts/NeueMachina-Medium.woff2") format("woff2"),
+    url("/fonts/NeueMachina-Medium.woff") format("woff");
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --c-bg: 6 7 20;          /* #060714  page — deep indigo-black   */
+  --c-surface: 12 14 34;   /* #0C0E22  raised panels              */
+  --c-surface2: 19 22 53;  /* #131635  hovered / nested panels    */
+
+  /* Text */
+  --c-ink: 238 238 251;    /* #EEEEFB  primary                    */
+  --c-muted: 169 171 208;  /* #A9ABD0  secondary                  */
+  --c-faint: 127 130 172;  /* #7F82AC  tertiary (4.9:1 on bg)     */
+
+  /* Accents */
+  --c-lav: 159 154 255;        /* #9F9AFF  interaction            */
+  --c-lav-strong: 124 116 255; /* #7C74FF  pressed / emphasis     */
+  --c-ember: 255 123 57;       /* #FF7B39  motion                 */
+
+  /* Hairlines */
+  --line: rgb(159 154 255 / 0.13);
+  --line-strong: rgb(159 154 255 / 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-back: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* Layout */
+  --gutter: 20px;
+  --nav-h: 72px;
+}
