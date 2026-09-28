@@ -863,18 +863,20 @@ export const getProject = (slug: string) => projects.find((p) => p.slug === slug
  */
 export const VISIT_SHARJAH_CAMPAIGNS = [
   "f1h2o",
-  "sctda",
+  "shurooq",
   "sharjah-summer-promotions",
   "sharjah-week-of-stars",
-  "shurooq",
+  "sctda",
 ] as const;
+
+/** Campaigns in VISIT_SHARJAH_CAMPAIGNS order (the array above drives display order). */
+const visitSharjahCampaigns = (): Project[] =>
+  VISIT_SHARJAH_CAMPAIGNS.map(getProject).filter((p): p is Project => Boolean(p));
 
 /** Sibling campaigns for a project's page — empty for standalone clients. */
 export const siblingsOf = (slug: string): Project[] => {
   if (slug === "visit-sharjah" || (VISIT_SHARJAH_CAMPAIGNS as readonly string[]).includes(slug)) {
-    return projects.filter(
-      (p) => p.slug !== slug && (VISIT_SHARJAH_CAMPAIGNS as readonly string[]).includes(p.slug)
-    );
+    return visitSharjahCampaigns().filter((p) => p.slug !== slug);
   }
   return [];
 };
@@ -893,9 +895,7 @@ export const HOME_CLIENT_LIMIT = 6;
 
 /** Campaigns delivered under a company — empty for standalone clients. */
 export const campaignsOf = (p: Project): Project[] =>
-  p.slug === "visit-sharjah"
-    ? projects.filter((c) => (VISIT_SHARJAH_CAMPAIGNS as readonly string[]).includes(c.slug))
-    : [];
+  p.slug === "visit-sharjah" ? visitSharjahCampaigns() : [];
 
 /** A company's own work plus everything delivered under it. */
 export const clientVideoCount = (p: Project) =>
