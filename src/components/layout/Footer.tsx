@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { ArrowUp } from "lucide-react";
 import { site } from "../../data/site";
 
 export function Footer() {
@@ -23,14 +22,6 @@ export function Footer() {
             </a>
           ))}
         </nav>
-
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="group inline-flex items-center gap-2 self-start rounded-full border border-lav/20 px-4 py-2.5 text-sm font-medium text-muted transition-colors hover:border-lav/50 hover:text-ink md:self-auto"
-        >
-          Back to top
-          <ArrowUp size={15} className="transition-transform duration-300 ease-back group-hover:-translate-y-0.5" />
-        </button>
       </div>
     </footer>
   );

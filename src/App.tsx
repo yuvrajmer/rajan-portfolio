@@ -5,6 +5,7 @@ import { Nav } from "./components/layout/Nav";
 import { Footer } from "./components/layout/Footer";
 import { CommandMenu } from "./components/layout/CommandMenu";
 import { CursorLabel } from "./components/ui/CursorLabel";
+import { ScrollToTop } from "./components/ui/ScrollToTop.tsx";
 import { ToastProvider } from "./components/ui/Toast";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -62,6 +63,7 @@ export default function App() {
       </main>
       <Footer />
       <CommandMenu />
+      <ScrollToTop />
       <CursorLabel />
       <div className="grain" aria-hidden />
     </ToastProvider>

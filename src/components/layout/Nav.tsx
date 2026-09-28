@@ -54,7 +54,7 @@ export function Nav() {
   const [menu, setMenu] = useState(false);
   const [spy, setSpy] = useState("");
   const mac = useIsMac();
-  const { scrollYProgress, scrollY } = useScroll();
+  const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
@@ -79,11 +79,6 @@ export function Nav() {
 
   return (
     <>
-      <motion.div
-        aria-hidden
-        style={{ scaleX: scrollYProgress }}
-        className="fixed inset-x-0 top-0 z-[70] h-[2px] origin-left bg-gradient-to-r from-lav via-lav to-ember"
-      />
       <header className="fixed inset-x-0 top-0 z-[65] pt-3 sm:pt-4">
         <div className="container-page">
           <nav
