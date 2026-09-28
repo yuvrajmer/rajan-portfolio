@@ -7,6 +7,11 @@ import a71 from "./continental/cgi-grass-grow.webp";
 import a72 from "./continental/cgi-truck.webp";
 import a73 from "./continental/cgi-tyre-locations.webp";
 import a75 from "./continental/sm-2024-events.webp";
+import c0 from "./covers/f1h2o.webp";
+import c1 from "./covers/shurooq.webp";
+import c2 from "./covers/summer-promotions.webp";
+import c3 from "./covers/sctda.webp";
+import c4 from "./covers/week-of-stars.webp";
 import a0 from "./f1h2o/2024-hero.webp";
 import a1 from "./f1h2o/2024-led-promo.webp";
 import a2 from "./f1h2o/2024-social-1.webp";
@@ -87,6 +92,11 @@ const assets = {
   "continental/cgi-truck": { src: a72, width: 800, height: 1422 },
   "continental/cgi-tyre-locations": { src: a73, width: 800, height: 1422 },
   "continental/sm-2024-events": { src: a75, width: 800, height: 1422 },
+  "covers/f1h2o": { src: c0, width: 1080, height: 1350 },
+  "covers/shurooq": { src: c1, width: 1080, height: 1350 },
+  "covers/summer-promotions": { src: c2, width: 1080, height: 1350 },
+  "covers/sctda": { src: c3, width: 1080, height: 1350 },
+  "covers/week-of-stars": { src: c4, width: 1080, height: 1350 },
   "f1h2o/2024-hero": { src: a0, width: 800, height: 450 },
   "f1h2o/2024-led-promo": { src: a1, width: 800, height: 271 },
   "f1h2o/2024-social-1": { src: a2, width: 800, height: 800 },

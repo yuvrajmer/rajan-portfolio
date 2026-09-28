@@ -7,6 +7,9 @@
    Lavender is used for interaction (focus, links, active states).
    Ember is reserved for motion: playheads, the ball, key moments.
 
+   `.surface-dark` re-applies these dark tokens to any subtree, so text that
+   sits on photography (work cards, lightbox) stays light in the light theme.
+
    Colours are stored as "R G B" triplets so Tailwind can apply
    opacity (e.g. bg-lav/20). Change a value here → whole site updates.
    ============================================================ */
@@ -28,7 +31,8 @@
   font-display: swap;
 }
 
-:root {
+:root,
+.surface-dark {
   color-scheme: dark;
 
   /* Surfaces */
@@ -50,6 +54,11 @@
   --line: rgb(159 154 255 / 0.13);
   --line-strong: rgb(159 154 255 / 0.28);
 
+  /* Depth — shadow tint and the solid hover fill of primary buttons */
+  --sh: 0 0 0;                 /* shadow colour                        */
+  --solid-hover: 255 255 255;  /* primary button hover                 */
+  --halo-a: 1;                 /* portrait glow strength               */
+
   /* Motion */
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-back: cubic-bezier(.34, 1.56, .64, 1);
@@ -57,4 +66,41 @@
   /* Layout */
   --gutter: 20px;
   --nav-h: 72px;
+}
+.surface-dark { color: rgb(var(--c-ink)); }
+
+/* ============================================================
+   LIGHT THEME — "Porcelain & Ink"
+   Warm ivory paper, deep indigo ink, violet for interaction and
+   burnt copper for motion. Same roles as dark, so no component
+   needs to know which theme is active.
+   Contrast on bg: ink 16.6:1 · muted 7.4:1 · faint 5.2:1 ·
+   lav 5.3:1 · ember 4.7:1
+   ============================================================ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --c-bg: 247 244 237;       /* #F7F4ED  page — warm ivory            */
+  --c-surface: 255 253 249;  /* #FFFDF9  raised panels — porcelain    */
+  --c-surface2: 239 234 224; /* #EFEAE0  hovered / nested panels      */
+
+  /* Text */
+  --c-ink: 20 18 43;         /* #14122B  primary — indigo ink         */
+  --c-muted: 78 76 112;      /* #4E4C70  secondary                    */
+  --c-faint: 100 98 136;     /* #646288  tertiary                     */
+
+  /* Accents */
+  --c-lav: 91 79 224;        /* #5B4FE0  interaction                  */
+  --c-lav-strong: 66 54 190; /* #4236BE  pressed / emphasis           */
+  --c-ember: 190 68 16;      /* #BE4410  motion — burnt copper        */
+
+  /* Hairlines */
+  --line: rgb(91 79 224 / 0.16);
+  --line-strong: rgb(91 79 224 / 0.32);
+
+  /* Depth */
+  --sh: 58 48 140;
+  --solid-hover: 20 18 43;
+  --halo-a: 0.4;               /* portrait glow — soft, visible but light on ivory */
 }

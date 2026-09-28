@@ -32,7 +32,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.97 }}
               transition={{ type: "spring", stiffness: 420, damping: 28 }}
-              className="glass flex items-center gap-2.5 rounded-full px-4 py-2.5 text-sm font-medium text-ink shadow-[0_18px_50px_-12px_rgba(0,0,0,.7)]"
+              className="glass flex items-center gap-2.5 rounded-full px-4 py-2.5 text-sm font-medium text-ink shadow-[0_18px_50px_-12px_rgb(var(--sh)/.7)]"
             >
               <span className="grid h-5 w-5 place-items-center rounded-full bg-lav text-bg">
                 <Check size={13} strokeWidth={3} />

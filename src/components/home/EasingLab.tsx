@@ -194,7 +194,7 @@ export function EasingLab() {
       </div>
       <section
         aria-labelledby="lab-title"
-        className="rounded-[24px] border border-lav/20 bg-surface/80 p-4 shadow-[0_40px_100px_-30px_rgba(0,0,0,.9),inset_0_1px_0_rgb(255_255_255/.05)] backdrop-blur-xl sm:p-5"
+        className="rounded-[24px] border border-lav/20 bg-surface/80 p-4 shadow-[0_40px_100px_-30px_rgb(var(--sh)/.9),inset_0_1px_0_rgb(255_255_255/.05)] backdrop-blur-xl sm:p-5"
       >
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -238,14 +238,14 @@ export function EasingLab() {
         >
           <defs>
             <linearGradient id="lab-grad" gradientUnits="userSpaceOnUse" x1={L} y1="0" x2={W - R} y2="0">
-              <stop offset="0" stopColor="rgb(159 154 255)" />
-              <stop offset="1" stopColor="rgb(255 123 57)" />
+              <stop offset="0" stopColor="rgb(var(--c-lav))" />
+              <stop offset="1" stopColor="rgb(var(--c-ember))" />
             </linearGradient>
           </defs>
 
           {/* grid */}
           {[0, 0.25, 0.5, 0.75, 1].map((x) => (
-            <line key={x} x1={sx(x)} x2={sx(x)} y1={T} y2={H - B} stroke="rgb(159 154 255 / .10)" />
+            <line key={x} x1={sx(x)} x2={sx(x)} y1={T} y2={H - B} stroke="rgb(var(--c-lav) / .10)" />
           ))}
           {[-0.5, 0, 0.5, 1, 1.5].map((y) => (
             <line
@@ -254,42 +254,42 @@ export function EasingLab() {
               x2={W - R}
               y1={sy(y)}
               y2={sy(y)}
-              stroke={y === 0 || y === 1 ? "rgb(159 154 255 / .32)" : "rgb(159 154 255 / .10)"}
+              stroke={y === 0 || y === 1 ? "rgb(var(--c-lav) / .32)" : "rgb(var(--c-lav) / .10)"}
               strokeDasharray={y === 0 || y === 1 ? undefined : "2 4"}
             />
           ))}
-          <text x={L - 8} y={sy(0) + 4} textAnchor="end" fontSize="11" fill="rgb(127 130 172)">0</text>
-          <text x={L - 8} y={sy(1) + 4} textAnchor="end" fontSize="11" fill="rgb(127 130 172)">1</text>
+          <text x={L - 8} y={sy(0) + 4} textAnchor="end" fontSize="11" fill="rgb(var(--c-faint))">0</text>
+          <text x={L - 8} y={sy(1) + 4} textAnchor="end" fontSize="11" fill="rgb(var(--c-faint))">1</text>
           {[["0f", 0], ["12f", 0.5], ["24f", 1]].map(([t, x]) => (
-            <text key={t as string} x={sx(x as number)} y={H - 10} textAnchor="middle" fontSize="11" fill="rgb(127 130 172)">{t}</text>
+            <text key={t as string} x={sx(x as number)} y={H - 10} textAnchor="middle" fontSize="11" fill="rgb(var(--c-faint))">{t}</text>
           ))}
 
           {/* linear reference */}
-          <line x1={sx(0)} y1={sy(0)} x2={sx(1)} y2={sy(1)} stroke="rgb(169 171 208 / .28)" strokeDasharray="4 5" />
+          <line x1={sx(0)} y1={sy(0)} x2={sx(1)} y2={sy(1)} stroke="rgb(var(--c-muted) / .28)" strokeDasharray="4 5" />
 
           {/* handle arms */}
-          <line x1={sx(0)} y1={sy(0)} x2={sx(x1)} y2={sy(y1)} stroke="rgb(159 154 255 / .55)" strokeWidth="1.5" />
-          <line x1={sx(1)} y1={sy(1)} x2={sx(x2)} y2={sy(y2)} stroke="rgb(255 123 57 / .55)" strokeWidth="1.5" />
+          <line x1={sx(0)} y1={sy(0)} x2={sx(x1)} y2={sy(y1)} stroke="rgb(var(--c-lav) / .55)" strokeWidth="1.5" />
+          <line x1={sx(1)} y1={sy(1)} x2={sx(x2)} y2={sy(y2)} stroke="rgb(var(--c-ember) / .55)" strokeWidth="1.5" />
 
           {/* the curve */}
           <path d={path} fill="none" stroke="url(#lab-grad)" strokeWidth="3.5" strokeLinecap="round" />
 
           {/* playhead */}
-          <line ref={headRef} x1={sx(0)} x2={sx(0)} y1={T} y2={H - B} stroke="rgb(255 123 57 / .35)" />
-          <circle ref={dotRef} cx={sx(0)} cy={sy(0)} r="4.5" fill="rgb(255 123 57)" />
+          <line ref={headRef} x1={sx(0)} x2={sx(0)} y1={T} y2={H - B} stroke="rgb(var(--c-ember) / .35)" />
+          <circle ref={dotRef} cx={sx(0)} cy={sy(0)} r="4.5" fill="rgb(var(--c-ember))" />
 
           {/* end keyframes */}
-          <rect x={sx(0) - 4.5} y={sy(0) - 4.5} width="9" height="9" transform={`rotate(45 ${sx(0)} ${sy(0)})`} fill="rgb(6 7 20)" stroke="rgb(159 154 255)" strokeWidth="1.5" />
-          <rect x={sx(1) - 4.5} y={sy(1) - 4.5} width="9" height="9" transform={`rotate(45 ${sx(1)} ${sy(1)})`} fill="rgb(6 7 20)" stroke="rgb(255 123 57)" strokeWidth="1.5" />
+          <rect x={sx(0) - 4.5} y={sy(0) - 4.5} width="9" height="9" transform={`rotate(45 ${sx(0)} ${sy(0)})`} fill="rgb(var(--c-bg))" stroke="rgb(var(--c-lav))" strokeWidth="1.5" />
+          <rect x={sx(1) - 4.5} y={sy(1) - 4.5} width="9" height="9" transform={`rotate(45 ${sx(1)} ${sy(1)})`} fill="rgb(var(--c-bg))" stroke="rgb(var(--c-ember))" strokeWidth="1.5" />
 
           {/* draggable handles */}
           {([1, 2] as const).map((h) => {
             const hx = h === 1 ? x1 : x2, hy = h === 1 ? y1 : y2;
-            const col = h === 1 ? "159 154 255" : "255 123 57";
+            const col = h === 1 ? "var(--c-lav)" : "var(--c-ember)";
             return (
               <g key={h} transform={`translate(${sx(hx)} ${sy(hy)})`}>
                 <circle r={drag === h ? 15 : 11} fill={`rgb(${col} / .18)`} className="transition-[r] duration-200" />
-                <circle r="7" fill={`rgb(${col})`} stroke="rgb(6 7 20)" strokeWidth="2.5" />
+                <circle r="7" fill={`rgb(${col})`} stroke="rgb(var(--c-bg))" strokeWidth="2.5" />
                 <circle
                   r="20"
                   fill="transparent"
@@ -322,7 +322,7 @@ export function EasingLab() {
           <div className="absolute left-[10%] right-[10%] top-[64px] h-px bg-lav/25" />
           <span className="absolute left-[10%] top-[64px] h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-lav bg-bg" />
           <span className="absolute left-[90%] top-[64px] h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-ember bg-bg" />
-          <div ref={shadowRef} className="absolute left-0 top-[68px] h-[7px] w-10 rounded-[50%] bg-black/70 blur-[3px]" />
+          <div ref={shadowRef} className="absolute left-0 top-[68px] h-[7px] w-10 rounded-[50%] bg-[rgb(var(--sh)/.7)] blur-[3px]" />
           <div
             ref={ballRef}
             className="absolute left-0 top-[24px] rounded-full will-change-transform"

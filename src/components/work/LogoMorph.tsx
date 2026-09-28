@@ -42,7 +42,7 @@ export function LogoMorph() {
 
       <div className="rounded-card border border-lav/15 bg-surface/60 p-4 sm:p-5">
         {/* light plate keeps dark-on-transparent logos legible */}
-        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-ink">
+        <div className="surface-dark relative aspect-[16/9] overflow-hidden rounded-2xl bg-ink">
           {LOGOS.map((l, i) => {
             const a = img(l.key);
             const d = p - i;

@@ -38,7 +38,7 @@ function Portrait() {
         className="absolute inset-[-2%] -z-10 rounded-full blur-2xl"
         style={{
           background:
-            "radial-gradient(circle at 38% 40%, rgb(var(--c-ember)) 0%, rgb(var(--c-lav)) 45%, transparent 68%)",
+            "radial-gradient(circle at 38% 40%, rgb(var(--c-ember) / var(--halo-a)) 0%, rgb(var(--c-lav) / var(--halo-a)) 45%, transparent 68%)",
         }}
         animate={reduce ? undefined : { opacity: [0.7, 1, 0.7], scale: [1, 1.04, 1] }}
         transition={reduce ? undefined : { duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -54,7 +54,7 @@ function Portrait() {
         height={a.height}
         alt={`Portrait of ${site.name}`}
         loading="lazy"
-        className="relative h-full w-full rounded-full object-cover shadow-[0_30px_90px_-18px_rgba(0,0,0,.9)]"
+        className="relative h-full w-full rounded-full object-cover shadow-[0_30px_90px_-18px_rgb(var(--sh)/.9)] light:shadow-[0_18px_44px_-22px_rgb(var(--sh)/.28)]"
       />
     </div>
   );

@@ -41,5 +41,8 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // light:<utility> applies only in the light theme (dark is the default, tokens do the rest)
+    ({ addVariant }) => addVariant("light", '[data-theme="light"] &'),
+  ],
 };

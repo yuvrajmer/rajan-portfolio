@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { img } from "../../assets";
 import { projects } from "../../data/projects";
 
-/** Client logos as clean white silhouettes — several originals are dark-on-transparent
+/** Client logos as clean single-colour silhouettes (white on dark, ink on light) — several originals are dark-on-transparent
  *  and would disappear on a dark theme. */
 export function BrandMarquee() {
   const set = (hidden: boolean) => (
@@ -22,7 +22,7 @@ export function BrandMarquee() {
                 alt=""
                 width={a.width}
                 height={a.height}
-                className="h-9 w-auto max-w-none brightness-0 invert"
+                className="h-9 w-auto max-w-none brightness-0 invert light:invert-0"
                 draggable={false}
               />
             </Link>

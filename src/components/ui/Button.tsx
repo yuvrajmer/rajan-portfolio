@@ -9,7 +9,7 @@ const base =
   "transition-[transform,background-color,border-color,color] duration-300 ease-out active:scale-[.97] select-none whitespace-nowrap";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-lav text-bg hover:bg-white",
+  primary: "bg-lav text-bg hover:bg-[rgb(var(--solid-hover))]",
   ghost: "border border-lav/25 text-ink hover:border-lav/60 hover:bg-lav/10",
 };
 

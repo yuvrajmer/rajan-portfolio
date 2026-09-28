@@ -19,7 +19,7 @@ Requires Node 18+.
 ## Before you publish — personalize these
 
 1. **Email address** — `src/data/site.ts` → `email`. Currently a placeholder
-   (`hello@rajantarakhala.com`).
+   (`hello.rajan.t@gmail.com`).
 2. **Social links** — `src/data/site.ts` → `socials`. Empty by default; add
    `{ label: "Instagram", href: "https://instagram.com/…" }` entries and they
    appear automatically in the footer and contact section.

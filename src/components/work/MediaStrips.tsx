@@ -30,7 +30,7 @@ export function VideoStrip({ label, items, onOpen }: { label?: string; items: Vi
                 data-cursor="Play"
                 aria-label={`Play ${v.title}`}
                 style={{ aspectRatio: ars[i] }}
-                className="group relative overflow-hidden rounded-2xl border border-lav/15 bg-surface text-left"
+                className="surface-dark group relative overflow-hidden rounded-2xl border border-lav/15 bg-surface text-left"
               >
                 <img
                   src={a.src}

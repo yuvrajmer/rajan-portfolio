@@ -8,7 +8,7 @@ export const site = {
   lede: "Character-driven animation, built frame by frame. I give characters their own way of moving — then let the story carry it.",
 
   /** ⚠ Replace with your real email before publishing. */
-  email: "hello@rajantarakhala.com",
+  email: "hello.rajan.t@gmail.com",
 
   /** Add links and they appear automatically in the footer and contact section.
    *  Example: { label: "Instagram", href: "https://instagram.com/yourhandle" } */

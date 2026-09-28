@@ -7,7 +7,7 @@ import { cn } from "../../lib/cn";
 export function LogoPlate({ project, className }: { project: Project; className?: string }) {
   const a = img(project.logo);
   return (
-    <span className={cn("inline-flex items-center rounded-xl bg-ink px-3.5 py-2.5", className)}>
+    <span className={cn("surface-dark inline-flex items-center rounded-xl bg-ink px-3.5 py-2.5", className)}>
       <img src={a.src} alt="" width={a.width} height={a.height} className="h-6 w-auto max-w-[130px] object-contain" />
     </span>
   );
@@ -18,7 +18,7 @@ export function WorkCard({ project, className }: { project: Project; className?:
   const n = videoCount(project);
   return (
     <Link to={`/work/${project.slug}`} data-cursor="View" className={cn("group block", className)}>
-      <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-lav/15 bg-surface">
+      <div className="surface-dark relative aspect-[4/5] overflow-hidden rounded-card border border-lav/15 bg-surface">
         <img
           src={cover.src}
           alt=""
@@ -30,7 +30,7 @@ export function WorkCard({ project, className }: { project: Project; className?:
         />
         <div className="absolute inset-0 bg-gradient-to-t from-bg/75 via-transparent to-bg/25" />
         <LogoPlate project={project} className="absolute left-4 top-4" />
-        <span className="absolute inset-0 rounded-card ring-1 ring-inset ring-white/5 transition-shadow duration-500 group-hover:ring-lav/50" />
+        <span className="absolute inset-0 rounded-card ring-1 ring-inset ring-ink/[0.06] transition-shadow duration-500 group-hover:ring-lav/50" />
       </div>
       <div className="mt-5 flex items-start justify-between gap-5">
         <div>

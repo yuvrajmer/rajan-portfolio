@@ -1,9 +1,10 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { img } from "../../assets";
-import { getProject, projects, videoCount, VISIT_SHARJAH_CAMPAIGNS, type Project } from "../../data/projects";
+import { clients, HOME_CLIENT_LIMIT, projects, videoCount, VISIT_SHARJAH_CAMPAIGNS } from "../../data/projects";
 import { Reveal } from "../ui/Reveal";
 import { LogoPlate } from "../ui/WorkCard";
+import type { Project } from "../../data/projects";
 
 /**
  * Visit Sharjah is an umbrella client relationship — F1H2O, SCTDA, the Summer
@@ -16,16 +17,17 @@ import { LogoPlate } from "../ui/WorkCard";
  * with Continental alongside it. Each project page carries the full detail.
  */
 export function SelectedWork() {
-  const visitSharjah = getProject("visit-sharjah");
-  const continental = getProject("continental");
-
   const campaignCount = VISIT_SHARJAH_CAMPAIGNS.length;
   const visitSharjahVideos = projects
     .filter((p) => (VISIT_SHARJAH_CAMPAIGNS as readonly string[]).includes(p.slug))
     .reduce((n, p) => n + videoCount(p), 0);
 
-  const [primary, ...secondary] = [visitSharjah, continental].filter((p): p is Project => Boolean(p));
+  // Home shows the first HOME_CLIENT_LIMIT companies (order and list live in data/projects.ts);
+  // the Works page lists all of them. First = large card, next two stack beside it, the rest sit in a grid below.
+  const [primary, ...others] = clients.slice(0, HOME_CLIENT_LIMIT);
   if (!primary) return null;
+  const secondary = others.slice(0, 2);
+  const rest = others.slice(2);
   const primaryCover = img(primary.cover.key);
 
   return (
@@ -49,13 +51,13 @@ export function SelectedWork() {
       </Reveal>
 
       {/* Featured: one bento grid, one cell per client relationship */}
-      <div className="mt-14 grid gap-6 lg:grid-cols-[1.7fr_1fr]">
+      <div className={`mt-14 grid gap-6 ${secondary.length > 0 ? "lg:grid-cols-[1.7fr_1fr]" : ""}`}>
         {/* Primary — the bigger, longer-running relationship */}
         <Reveal delay={0.1}>
           <Link
             to={`/work/${primary.slug}`}
             data-cursor="View"
-            className="group relative block overflow-hidden rounded-[32px] border border-lav/20 bg-surface"
+            className="surface-dark group relative block overflow-hidden rounded-[32px] border border-lav/20 bg-surface"
           >
             <div className="relative aspect-[4/5] sm:aspect-[16/9] lg:aspect-auto lg:h-[540px]">
               <img
@@ -92,47 +94,61 @@ export function SelectedWork() {
         {secondary.length > 0 && (
           <div className="flex flex-col gap-6 lg:h-[540px]">
             {secondary.map((project, i) => {
-              const cover = img(project.cover.key);
               return (
                 <Reveal key={project.slug} delay={0.18 + i * 0.08} className="min-h-[260px] flex-1">
-                  <Link
-                    to={`/work/${project.slug}`}
-                    data-cursor="View"
-                    className="group relative block h-full overflow-hidden rounded-[32px] border border-lav/20 bg-surface"
-                  >
-                    <img
-                      src={cover.src}
-                      alt=""
-                      width={cover.width}
-                      height={cover.height}
-                      loading="lazy"
-                      style={{ objectPosition: project.cover.position }}
-                      className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-                    />
-                    <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/90 via-bg/30 to-bg/5" />
-
-                    <LogoPlate project={project} className="absolute left-5 top-5" />
-
-                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
-                      <div>
-                        <h3 className="font-display text-[clamp(1.4rem,2.4vw,2rem)] leading-[1.05] text-ink">
-                          {project.name}
-                        </h3>
-                        <p className="mt-2 max-w-[38ch] text-pretty text-[14px] leading-relaxed text-muted">
-                          {project.subtitle}
-                        </p>
-                      </div>
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-lav/25 bg-bg/40 text-ink backdrop-blur transition-all duration-500 ease-back group-hover:rotate-45 group-hover:border-lav group-hover:bg-lav group-hover:text-bg">
-                        <ArrowUpRight size={19} />
-                      </span>
-                    </div>
-                  </Link>
+                  <CompactCard project={project} />
                 </Reveal>
               );
             })}
           </div>
         )}
       </div>
+
+      {/* Companies beyond the first three — a tidy grid, up to HOME_CLIENT_LIMIT in total */}
+      {rest.length > 0 && (
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {rest.map((project, i) => (
+            <Reveal key={project.slug} delay={0.08 * (i % 3)} className="aspect-[4/3]">
+              <CompactCard project={project} />
+            </Reveal>
+          ))}
+        </div>
+      )}
     </section>
+  );
+}
+
+/** The smaller company card — used beside the primary card and in the grid below it. */
+function CompactCard({ project }: { project: Project }) {
+  const cover = img(project.cover.key);
+  return (
+    <Link
+      to={`/work/${project.slug}`}
+      data-cursor="View"
+      className="surface-dark group relative block h-full overflow-hidden rounded-[32px] border border-lav/20 bg-surface"
+    >
+      <img
+        src={cover.src}
+        alt=""
+        width={cover.width}
+        height={cover.height}
+        loading="lazy"
+        style={{ objectPosition: project.cover.position }}
+        className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+      />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/90 via-bg/30 to-bg/5" />
+
+      <LogoPlate project={project} className="absolute left-5 top-5" />
+
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
+        <div>
+          <h3 className="font-display text-[clamp(1.4rem,2.4vw,2rem)] leading-[1.05] text-ink">{project.name}</h3>
+          <p className="mt-2 max-w-[38ch] text-pretty text-[14px] leading-relaxed text-muted">{project.subtitle}</p>
+        </div>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-lav/25 bg-bg/40 text-ink backdrop-blur transition-all duration-500 ease-back group-hover:rotate-45 group-hover:border-lav group-hover:bg-lav group-hover:text-bg">
+          <ArrowUpRight size={19} />
+        </span>
+      </div>
+    </Link>
   );
 }

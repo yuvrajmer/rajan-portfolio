@@ -44,7 +44,7 @@ function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }
     // The video owner has disabled embedding — no site can override that. Fall back to a
     // clean poster + CTA that matches the site instead of YouTube's own branded error card.
     return (
-      <div className="relative w-[min(92vw,1120px,calc(74vh*1.7778))] overflow-hidden rounded-2xl shadow-[0_40px_120px_-20px_rgba(0,0,0,.9)] ring-1 ring-lav/20">
+      <div className="surface-dark relative w-[min(92vw,1120px,calc(74vh*1.7778))] overflow-hidden rounded-2xl shadow-[0_40px_120px_-20px_rgb(var(--sh)/.9)] ring-1 ring-lav/20">
         <img src={poster.src} alt="" className="aspect-video w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg/85 via-bg/20 to-bg/10" />
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
@@ -71,7 +71,7 @@ function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl bg-black shadow-[0_40px_120px_-20px_rgba(0,0,0,.9)] ring-1 ring-lav/20",
+        "relative overflow-hidden rounded-2xl bg-black shadow-[0_40px_120px_-20px_rgb(var(--sh)/.9)] ring-1 ring-lav/20",
         short
           ? "aspect-[9/16] h-[min(76vh,780px)] max-w-[92vw]"
           : "aspect-video w-[min(92vw,1120px,calc(74vh*1.7778))]"
@@ -194,7 +194,7 @@ export function MediaLightbox({
                     <img
                       src={img(item.key).src}
                       alt={item.alt}
-                      className="max-h-[76vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_40px_120px_-20px_rgba(0,0,0,.9)] ring-1 ring-lav/20 sm:max-w-[min(1000px,80vw)]"
+                      className="max-h-[76vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_40px_120px_-20px_rgb(var(--sh)/.9)] ring-1 ring-lav/20 sm:max-w-[min(1000px,80vw)]"
                     />
                   )}
                 </motion.div>

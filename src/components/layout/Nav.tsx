@@ -5,6 +5,7 @@ import { Menu, Search, X } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { useIsMac } from "../../lib/hooks";
 import { site } from "../../data/site";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 const REEL_SECONDS = 90;
 const FPS = 24;
@@ -90,7 +91,7 @@ export function Nav() {
             className={cn(
               "flex items-center gap-2 rounded-full py-2 pl-4 pr-2 transition-all duration-400 ease-out",
               scrolled
-                ? "glass shadow-[0_18px_50px_-20px_rgba(0,0,0,.8)]"
+                ? "glass shadow-[0_18px_50px_-20px_rgb(var(--sh)/.8)]"
                 : "border border-transparent bg-transparent shadow-none"
             )}
           >
@@ -136,6 +137,8 @@ export function Nav() {
               {mac ? "⌘" : "Ctrl"} K
             </kbd>
           </button>
+
+          <ThemeToggle />
 
           <button
             onClick={() => setMenu((m) => !m)}

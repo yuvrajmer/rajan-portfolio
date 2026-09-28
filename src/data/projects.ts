@@ -77,7 +77,7 @@ export const projects: Project[] = [
     subtitle: "Digital creative work for the UIM F1H2O World Championship.",
     years: "2024 – 2025",
     disciplines: ["3D & CGI", "VFX & tracking", "Motion graphics", "Social campaigns"],
-    cover: { key: "f1h2o/2025-social-2", position: "50% 55%" },
+    cover: { key: "covers/f1h2o", position: "50% 55%" },
     chapters: [
       {
         id: "2024",
@@ -212,7 +212,7 @@ export const projects: Project[] = [
     logo: "logo/sctda",
     subtitle: "Creative work for the Sharjah Commerce & Tourism Development Authority.",
     disciplines: ["3D & CGI", "Motion graphics", "Social campaigns"],
-    cover: { key: "sctda/logo-reveal", position: "45% 50%" },
+    cover: { key: "covers/sctda", position: "50% 50%" },
     chapters: [
       {
         id: "logo-reveal",
@@ -302,7 +302,7 @@ export const projects: Project[] = [
     subtitle: "Promotional campaign work for Sharjah Summer Promotions.",
     years: "2024 – 2026",
     disciplines: ["3D & CGI", "VFX & tracking", "Motion graphics", "Social campaigns"],
-    cover: { key: "summer/2026-social-3", position: "50% 40%" },
+    cover: { key: "covers/summer-promotions", position: "50% 50%" },
     chapters: [
       {
         id: "2024",
@@ -441,7 +441,7 @@ export const projects: Project[] = [
     subtitle: "Creative campaign work for Sharjah's Week of Stars.",
     years: "2024 – 2025",
     disciplines: ["Motion graphics", "Social campaigns"],
-    cover: { key: "wos/2024-kv", position: "50% 30%" },
+    cover: { key: "covers/week-of-stars", position: "50% 50%" },
     chapters: [
       {
         id: "2024",
@@ -670,7 +670,7 @@ export const projects: Project[] = [
     subtitle: "Promotional travel content for the Sharjah Investment and Development Authority.",
     years: "2024 – 2026",
     disciplines: ["3D & CGI", "VFX & tracking", "Motion graphics", "Social campaigns"],
-    cover: { key: "shurooq/2026-hero", position: "50% 50%" },
+    cover: { key: "covers/shurooq", position: "50% 50%" },
     chapters: [
       {
         id: "2024",
@@ -877,6 +877,33 @@ export const siblingsOf = (slug: string): Project[] => {
     );
   }
   return [];
+};
+
+/**
+ * Companies (top-level clients), in display order — the Works page lists all of
+ * them, the home page shows the first HOME_CLIENT_LIMIT. To add a company:
+ * add its project above, then put its slug here. (Campaigns delivered under a
+ * company, like F1H2O under Visit Sharjah, stay out of this list.)
+ */
+export const CLIENT_SLUGS = ["visit-sharjah", "continental"] as const;
+export const clients: Project[] = CLIENT_SLUGS.map(getProject).filter((p): p is Project => Boolean(p));
+
+/** How many companies the home page "Selected work" section shows. */
+export const HOME_CLIENT_LIMIT = 6;
+
+/** Campaigns delivered under a company — empty for standalone clients. */
+export const campaignsOf = (p: Project): Project[] =>
+  p.slug === "visit-sharjah"
+    ? projects.filter((c) => (VISIT_SHARJAH_CAMPAIGNS as readonly string[]).includes(c.slug))
+    : [];
+
+/** A company's own work plus everything delivered under it. */
+export const clientVideoCount = (p: Project) =>
+  campaignsOf(p).reduce((n, c) => n + videoCount(c), videoCount(p));
+
+export const clientDisciplines = (p: Project): Discipline[] => {
+  const all = [p, ...campaignsOf(p)];
+  return DISCIPLINES.filter((d) => all.some((x) => x.disciplines.includes(d)));
 };
 
 export const chapterVideos = (c: Chapter): Video[] =>

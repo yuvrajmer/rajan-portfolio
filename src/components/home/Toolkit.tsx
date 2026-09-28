@@ -66,7 +66,7 @@ export function Toolkit() {
                       }`}
                     />
                     <div
-                      className="relative flex items-center justify-center rounded-full border border-lav/15 bg-gradient-to-b from-surface/85 to-surface2/45 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.65)] backdrop-blur-sm transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-[1.07] group-hover:border-lav/40"
+                      className="relative flex items-center justify-center rounded-full border border-lav/15 bg-gradient-to-b from-surface/85 to-surface2/45 shadow-[0_20px_50px_-20px_rgb(var(--sh)/0.65)] backdrop-blur-sm transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-[1.07] group-hover:border-lav/40"
                       style={{ width: size, height: size }}
                     >
                       <img
@@ -75,7 +75,7 @@ export function Toolkit() {
                         height={a.height}
                         alt=""
                         loading="lazy"
-                        className="h-[56%] w-[56%] object-contain drop-shadow-[0_4px_14px_rgba(0,0,0,0.4)]"
+                        className="h-[56%] w-[56%] object-contain drop-shadow-[0_4px_14px_rgb(var(--sh)/0.4)]"
                       />
                       <span
                         aria-hidden

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +9,19 @@
       content="Rajan Tarakhala is a 2D/3D motion artist creating character-driven animation, VFX and campaign motion for tourism, sport and government brands in Sharjah, UAE."
     />
     <meta name="theme-color" content="#060714" />
+    <!-- Apply the saved theme before first paint (no dark→light flash). Default stays dark.
+         The light hex below mirrors --c-bg in styles/theme.css; lib/theme.ts reads the token after that. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t === "light") {
+            document.documentElement.setAttribute("data-theme", "light");
+            document.querySelector('meta[name="theme-color"]').setAttribute("content", "#F7F4ED");
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Rajan Tarakhala — 2D/3D Motion Artist" />
     <meta

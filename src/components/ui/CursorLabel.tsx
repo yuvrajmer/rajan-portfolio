@@ -52,7 +52,7 @@ export function CursorLabel() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.4 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="absolute -left-9 -top-9 grid h-[72px] w-[72px] place-items-center rounded-full bg-lav text-[13px] font-bold text-bg shadow-[0_10px_40px_-8px_rgb(159_154_255/.7)]"
+            className="absolute -left-9 -top-9 grid h-[72px] w-[72px] place-items-center rounded-full bg-lav text-[13px] font-bold text-bg shadow-[0_10px_40px_-8px_rgb(var(--c-lav)/.7)]"
           >
             {label}
           </motion.span>
