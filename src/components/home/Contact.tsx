@@ -1,10 +1,9 @@
 import { Copy, Mail } from "lucide-react";
 import { site } from "../../data/site";
 import { copyText } from "../../lib/hooks";
-import { Button, LinkButton } from "../ui/Button";
-import { Magnetic } from "../ui/Magnetic";
 import { Reveal } from "../ui/Reveal";
 import { useToast } from "../ui/Toast";
+import { ContactForm } from "./ContactForm";
 
 export function Contact() {
   const { toast } = useToast();
@@ -13,7 +12,7 @@ export function Contact() {
   return (
     <section id="contact" className="container-page pb-32 pt-8 lg:pb-44">
       <Reveal>
-        <div className="relative overflow-hidden rounded-[32px] border border-lav/20 bg-surface/70 px-7 py-16 sm:px-14 sm:py-24">
+        <div className="relative overflow-hidden rounded-[32px] border border-lav/20 bg-surface/70 px-7 py-16 sm:px-10 sm:py-20 lg:px-14 lg:py-24">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0"
@@ -22,32 +21,47 @@ export function Contact() {
                 "radial-gradient(60% 70% at 100% 0%, rgb(var(--c-lav) / .18), transparent 65%), radial-gradient(40% 50% at 0% 100%, rgb(var(--c-ember) / .12), transparent 70%)",
             }}
           />
-          <h2 className="relative max-w-[17ch] text-balance font-display text-[clamp(2.3rem,6vw,5.2rem)] leading-[1.02]">
-            {site.contactLine}
-          </h2>
-          <div className="relative mt-12 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <Magnetic>
-              <Button onClick={copy} className="w-full px-7 py-4 text-base sm:w-auto">
-                <Copy size={18} />
-                {site.email}
-              </Button>
-            </Magnetic>
-            <LinkButton href={`mailto:${site.email}`} variant="ghost" className="w-full px-7 py-4 text-base sm:w-auto">
-              <Mail size={18} />
-              Write an email
-            </LinkButton>
-          </div>
-          {site.socials.length > 0 && (
-            <ul className="relative mt-10 flex flex-wrap gap-x-8 gap-y-2 text-[15px] text-muted">
-              {site.socials.map((s) => (
-                <li key={s.href}>
-                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-ink">
+
+          <div className="relative grid gap-14 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
+            <div>
+              <h2 className="max-w-[17ch] text-balance font-display text-[clamp(2.3rem,5.4vw,4.4rem)] leading-[1.02]">
+                {site.contactLine}
+              </h2>
+              <p className="mt-5 max-w-[38ch] text-[17px] text-muted">
+                Tell me what you're building — I read every message myself.
+              </p>
+
+              <div className="mt-12 flex flex-col gap-4 border-t border-lav/10 pt-8 text-[15px] text-muted">
+                <button
+                  onClick={copy}
+                  className="group inline-flex items-center gap-2.5 text-left transition-colors hover:text-ink"
+                >
+                  <Copy size={15} className="shrink-0 text-faint transition-colors group-hover:text-lav" />
+                  {site.email}
+                </button>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="group inline-flex items-center gap-2.5 transition-colors hover:text-ink"
+                >
+                  <Mail size={15} className="shrink-0 text-faint transition-colors group-hover:text-lav" />
+                  Write an email instead
+                </a>
+                {site.socials.map((s) => (
+                  <a
+                    key={s.href}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors hover:text-ink"
+                  >
                     {s.label}
                   </a>
-                </li>
-              ))}
-            </ul>
-          )}
+                ))}
+              </div>
+            </div>
+
+            <ContactForm />
+          </div>
         </div>
       </Reveal>
     </section>
