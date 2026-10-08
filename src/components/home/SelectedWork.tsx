@@ -285,7 +285,7 @@ function Panel({
             </span>
           </div>
 
-          <div className="w-full lg:w-[min(600px,100%)]">
+          <div className="w-full">
             {facts.length > 0 && (
               <div className="mb-4 flex flex-wrap gap-2">
                 {facts.map((f) => (
@@ -296,7 +296,7 @@ function Panel({
               </div>
             )}
             <div className="flex items-end justify-between gap-5">
-              <div className="min-w-0">
+              <div className="min-w-0 lg:max-w-[600px]">
                 <h3 className="font-display text-[clamp(1.7rem,3.4vw,3rem)] leading-[1.02] text-ink">{project.name}</h3>
                 <p className="mt-3 max-w-[46ch] text-pretty text-[14.5px] leading-snug text-muted sm:text-[15px]">
                   {project.subtitle}
