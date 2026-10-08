@@ -7,6 +7,7 @@ import { CommandMenu } from "./components/layout/CommandMenu";
 import { CursorLabel } from "./components/ui/CursorLabel";
 import { ScrollToTop } from "./components/ui/ScrollToTop.tsx";
 import { ToastProvider } from "./components/ui/Toast";
+import { PageLoader, RouteLoader } from "./components/ui/Loader";
 
 const Home = lazy(() => import("./pages/Home"));
 const Works = lazy(() => import("./pages/Works"));
@@ -45,7 +46,7 @@ export default function App() {
       <ScrollManager />
       <Nav />
       <main id="main" className="min-h-[100svh]">
-        <Suspense fallback={null}>
+        <Suspense fallback={<RouteLoader />}>
           <motion.div
             key={pathname}
             initial={{ opacity: 0, y: 12 }}
@@ -66,6 +67,7 @@ export default function App() {
       <ScrollToTop />
       <CursorLabel />
       <div className="grain" aria-hidden />
+      <PageLoader />
     </ToastProvider>
   );
 }

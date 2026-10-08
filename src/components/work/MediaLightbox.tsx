@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ExternalLink, Play, X } from "lucide-react";
-import { img, type ImageKey } from "../../assets";
+import { ChevronLeft, ChevronRight, ExternalLink, Play, Volume2, X } from "lucide-react";
+import { img, ratio, type ImageKey } from "../../assets";
 import { cn } from "../../lib/cn";
-import { embedUrl, isEmbedDisabledError, isShort, loadYouTubeIframeAPI } from "../../lib/youtube";
+import { embedUrl, isEmbedDisabledError, isShort, loadYouTubeIframeAPI, YT_PLAYING, type YTPlayer } from "../../lib/youtube";
 
 export type LightboxItem =
   | { type: "video"; url: string; title: string; thumb: ImageKey; src?: string }
@@ -15,21 +15,50 @@ const title = (i: LightboxItem) => (i.type === "video" ? i.title : i.alt);
 function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }) {
   const [loaded, setLoaded] = useState(false);
   const [blocked, setBlocked] = useState(false);
+  // true when the video is playing but the player is muted (autoplay policies, iOS, etc.)
+  const [silent, setSilent] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
   const poster = img(item.thumb);
-  const short = isShort(item.url);
   const selfHosted = Boolean(item.src);
+  // Shape of the stage follows the real video: wide thumbnails are always landscape (some wide videos
+  // are published under /shorts/ links); otherwise a /shorts/ link means portrait.
+  const r = ratio(item.thumb);
+  const wide = r >= 1.2;
+  const square = !wide && r > 0.9; // 1:1 posts (e.g. square Shorts)
+  const short = !wide && !square && isShort(item.url);
 
   // Self-hosted files skip the YouTube API entirely — nothing to detect, it just plays.
   useEffect(() => {
     if (selfHosted) return;
-    let player: unknown;
     let cancelled = false;
+    setSilent(false);
     loadYouTubeIframeAPI().then(() => {
       if (cancelled || !iframeRef.current || !window.YT) return;
-      player = new window.YT.Player(iframeRef.current, {
+      playerRef.current = new window.YT.Player(iframeRef.current, {
         events: {
-          onError: (e: { data: number }) => {
+          // SOUND FIX: make sure the player is un-muted and at full volume the moment it is ready,
+          // instead of relying on whatever state the embed started in.
+          onReady: (e) => {
+            try {
+              e.target.unMute();
+              e.target.setVolume(100);
+              e.target.playVideo();
+            } catch {
+              /* player not ready for commands yet — the "Tap for sound" pill below covers it */
+            }
+          },
+          // If the video ends up playing while muted, say so and let the viewer fix it with one tap.
+          onStateChange: (e) => {
+            if (e.data === YT_PLAYING) {
+              try {
+                setSilent(e.target.isMuted() || e.target.getVolume() === 0);
+              } catch {
+                /* ignore */
+              }
+            }
+          },
+          onError: (e) => {
             if (isEmbedDisabledError(e.data)) setBlocked(true);
           },
         },
@@ -37,8 +66,22 @@ function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }
     });
     return () => {
       cancelled = true;
+      playerRef.current = null;
     };
   }, [selfHosted, item.url]);
+
+  const turnSoundOn = () => {
+    const p = playerRef.current;
+    if (!p) return;
+    try {
+      p.unMute();
+      p.setVolume(100);
+      p.playVideo();
+    } catch {
+      /* ignore */
+    }
+    setSilent(false);
+  };
 
   if (!selfHosted && blocked) {
     // The video owner has disabled embedding — no site can override that. Fall back to a
@@ -72,9 +115,11 @@ function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }
     <div
       className={cn(
         "relative overflow-hidden rounded-2xl bg-black shadow-[0_40px_120px_-20px_rgb(var(--sh)/.9)] ring-1 ring-lav/20",
-        short
-          ? "aspect-[9/16] h-[min(76vh,780px)] max-w-[92vw]"
-          : "aspect-video w-[min(92vw,1120px,calc(74vh*1.7778))]"
+        square
+          ? "aspect-square w-[min(92vw,calc(76vh),780px)]"
+          : short
+            ? "aspect-[9/16] h-[min(76vh,780px)] max-w-[92vw]"
+            : "aspect-video w-[min(92vw,1120px,calc(74vh*1.7778))]"
       )}
     >
       {/* poster stays until the player is ready */}
@@ -89,8 +134,12 @@ function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }
           controls
           autoPlay
           playsInline
-          onLoadedData={() => setLoaded(true)}
-          className={cn("absolute inset-0 h-full w-full transition-opacity duration-500", loaded ? "opacity-100" : "opacity-0")}
+          onLoadedData={(e) => {
+            e.currentTarget.muted = false;
+            e.currentTarget.volume = 1;
+            setLoaded(true);
+          }}
+          className={cn("absolute inset-0 h-full w-full bg-black object-contain transition-opacity duration-500", loaded ? "opacity-100" : "opacity-0")}
         />
       ) : (
         <iframe
@@ -102,6 +151,15 @@ function VideoStage({ item }: { item: Extract<LightboxItem, { type: "video" }> }
           onLoad={() => setLoaded(true)}
           className={cn("absolute inset-0 h-full w-full transition-opacity duration-500", loaded ? "opacity-100" : "opacity-0")}
         />
+      )}
+      {!selfHosted && silent && (
+        <button
+          onClick={turnSoundOn}
+          className="absolute left-3 top-3 z-10 inline-flex items-center gap-2 rounded-full bg-lav px-4 py-2 text-[13px] font-semibold text-bg shadow-lg transition-transform duration-300 ease-back hover:scale-105"
+        >
+          <Volume2 size={15} />
+          Tap for sound
+        </button>
       )}
     </div>
   );
@@ -194,7 +252,7 @@ export function MediaLightbox({
                     <img
                       src={img(item.key).src}
                       alt={item.alt}
-                      className="max-h-[76vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_40px_120px_-20px_rgb(var(--sh)/.9)] ring-1 ring-lav/20 sm:max-w-[min(1000px,80vw)]"
+                      className="max-h-[76vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_40px_120px_-20px_rgb(var(--sh)/.9)] ring-1 ring-lav/20 sm:max-w-[min(1400px,86vw)]"
                     />
                   )}
                 </motion.div>

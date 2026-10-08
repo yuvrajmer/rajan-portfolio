@@ -8,7 +8,7 @@ export function BrandMarquee() {
   const set = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center gap-16 pr-16" aria-hidden={hidden || undefined}>
       {projects.map((p) => {
-        const a = img(p.logo);
+        const a = p.logo ? img(p.logo) : null;
         return (
           <li key={p.slug} className="shrink-0">
             <Link
@@ -17,14 +17,19 @@ export function BrandMarquee() {
               aria-label={hidden ? undefined : p.name}
               className="block opacity-45 transition-opacity duration-300 hover:opacity-100"
             >
-              <img
-                src={a.src}
-                alt=""
-                width={a.width}
-                height={a.height}
-                className="h-9 w-auto max-w-none brightness-0 invert light:invert-0"
-                draggable={false}
-              />
+              {a ? (
+                <img
+                  src={a.src}
+                  alt=""
+                  width={a.width}
+                  height={a.height}
+                  className="h-9 w-auto max-w-none brightness-0 invert light:invert-0"
+                  draggable={false}
+                />
+              ) : (
+                // PLACEHOLDER: no logo file for this company yet — its name is shown as text instead.
+                <span className="block whitespace-nowrap font-display text-[22px] leading-9 text-ink">{p.shortName}</span>
+              )}
             </Link>
           </li>
         );

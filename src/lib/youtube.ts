@@ -21,12 +21,42 @@ export const embedUrl = (url: string) =>
 /*  of guessing from onLoad (which fires even for YouTube's own error    */
 /*  page, since that's still a successfully-loaded document).            */
 /* -------------------------------------------------------------------- */
+export interface YTPlayer {
+  playVideo(): void;
+  pauseVideo(): void;
+  mute(): void;
+  unMute(): void;
+  isMuted(): boolean;
+  setVolume(volume: number): void;
+  getVolume(): number;
+  getPlayerState(): number;
+  destroy(): void;
+}
+export interface YTEvent {
+  target: YTPlayer;
+  data: number;
+}
+
 declare global {
   interface Window {
-    YT?: { Player: new (el: HTMLIFrameElement | string, opts: Record<string, unknown>) => unknown };
+    YT?: {
+      Player: new (
+        el: HTMLIFrameElement | string,
+        opts: {
+          events?: {
+            onReady?: (e: YTEvent) => void;
+            onStateChange?: (e: YTEvent) => void;
+            onError?: (e: YTEvent) => void;
+          };
+        }
+      ) => YTPlayer;
+    };
     onYouTubeIframeAPIReady?: () => void;
   }
 }
+
+/** YouTube player states we care about. */
+export const YT_PLAYING = 1;
 
 let apiPromise: Promise<void> | null = null;
 

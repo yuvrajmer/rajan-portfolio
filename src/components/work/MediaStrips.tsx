@@ -1,14 +1,80 @@
-import type { CSSProperties } from "react";
-import { Play } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { img, ratio } from "../../assets";
 import type { Still, Video } from "../../data/projects";
 
-const stripStyle = (ars: number[]): CSSProperties =>
-  ({
-    "--n": ars.length,
+/** Size rules: portrait reels get a tall, readable height and slide sideways when they don't all fit. */
+const stripStyle = (ars: number[], opts?: { min?: string; max?: string }): CSSProperties => {
+  const n = ars.length;
+  const avg = ars.reduce((a, b) => a + b, 0) / n;
+  const portrait = avg < 0.9;
+  const min = opts?.min ?? (n === 1 ? "0px" : portrait && n >= 3 ? "400px" : "260px");
+  const max = opts?.max ?? (portrait && n >= 3 ? "520px" : n === 1 ? "460px" : "440px");
+  return {
+    "--n": n,
     "--sum": ars.reduce((a, b) => a + b, 0).toFixed(4),
-    "--min": ars.length === 1 ? "0px" : "220px",
-  }) as CSSProperties;
+    "--min": min,
+    "--max": max,
+  } as CSSProperties;
+};
+
+/** Scrollable strip with prev / next arrows that only appear when there is something to slide to. */
+function StripSlider({ style, children }: { style: CSSProperties; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [can, setCan] = useState({ prev: false, next: false });
+
+  const update = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    setCan({ prev: el.scrollLeft > 4, next: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+  }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    Array.from(el.children).forEach((c) => ro.observe(c));
+    el.addEventListener("scroll", update, { passive: true });
+    return () => {
+      ro.disconnect();
+      el.removeEventListener("scroll", update);
+    };
+  }, [update]);
+
+  const slide = (dir: 1 | -1) => {
+    const el = ref.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
+
+  return (
+    <div className="relative">
+      <div className="strip-wrap">
+        <div ref={ref} className="strip" style={style}>
+          {children}
+        </div>
+      </div>
+      {([-1, 1] as const).map((d) => {
+        const show = d === 1 ? can.next : can.prev;
+        return (
+          <button
+            key={d}
+            type="button"
+            onClick={() => slide(d)}
+            aria-label={d === 1 ? "Slide right" : "Slide left"}
+            tabIndex={show ? 0 : -1}
+            className={`absolute top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-lav/30 bg-bg/70 text-ink shadow-lg backdrop-blur transition-all duration-300 ease-back hover:scale-110 hover:border-lav hover:bg-lav hover:text-bg ${
+              d === 1 ? "right-2" : "left-2"
+            } ${show ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          >
+            {d === 1 ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 function Caption({ children }: { children?: string }) {
   return children ? <figcaption className="mb-3.5 text-[14px] font-medium text-faint">{children}</figcaption> : null;
@@ -19,8 +85,7 @@ export function VideoStrip({ label, items, onOpen }: { label?: string; items: Vi
   return (
     <figure className="mt-8">
       <Caption>{label}</Caption>
-      <div className="strip-wrap">
-        <div className="strip" style={stripStyle(ars)}>
+      <StripSlider style={stripStyle(ars)}>
           {items.map((v, i) => {
             const a = img(v.thumb);
             return (
@@ -50,8 +115,7 @@ export function VideoStrip({ label, items, onOpen }: { label?: string; items: Vi
               </button>
             );
           })}
-        </div>
-      </div>
+      </StripSlider>
     </figure>
   );
 }
@@ -61,8 +125,7 @@ export function StillStrip({ label, items, onOpen }: { label: string; items: Sti
   return (
     <figure className="mt-8">
       <Caption>{label}</Caption>
-      <div className="strip-wrap">
-        <div className="strip" style={{ ...stripStyle(ars), "--min": "170px", "--max": "260px" } as CSSProperties}>
+      <StripSlider style={stripStyle(ars, { min: "200px", max: "340px" })}>
           {items.map((s, i) => {
             const a = img(s.key);
             return (
@@ -85,8 +148,7 @@ export function StillStrip({ label, items, onOpen }: { label: string; items: Sti
               </button>
             );
           })}
-        </div>
-      </div>
+      </StripSlider>
     </figure>
   );
 }

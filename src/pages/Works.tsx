@@ -326,15 +326,18 @@ function Panel({ project, index }: { project: Project; index: number }) {
   );
 }
 
-/** Compact company card — keeps the page short however many companies there are. */
+/**
+ * Company card. At rest: cover image with the company name and its campaign / video counts.
+ * On hover: the dark view fades in — dimmed cover, big logo, description, number and arrow.
+ */
 function GridCard({ project, index }: { project: Project; index: number }) {
   const cover = img(project.cover.key);
   const campaigns = campaignsOf(project).length;
   const videos = clientVideoCount(project);
-  const meta = [campaigns > 0 && `${campaigns} campaigns`, videos > 0 && `${videos} videos`, project.years].filter(Boolean);
+  const meta = [campaigns > 0 && `${campaigns} campaigns`, videos > 0 && `${videos} videos`].filter(Boolean);
   return (
-    <Link to={`/work/${project.slug}`} data-cursor="View" className="group block">
-      <div className="surface-dark relative aspect-[4/5] overflow-hidden rounded-[28px] border border-lav/20 bg-surface shadow-[0_30px_70px_-40px_rgb(var(--sh)/.6)]">
+    <Link to={`/work/${project.slug}`} data-cursor="View" className="group block outline-none">
+      <div className="surface-dark relative flex aspect-[4/5] flex-col overflow-hidden rounded-[28px] border border-lav/20 bg-bg shadow-[0_30px_70px_-40px_rgb(var(--sh)/.6)] transition-all duration-500 ease-out group-hover:-translate-y-1.5 group-hover:border-lav/60 group-focus-visible:-translate-y-1.5 group-focus-visible:border-lav/60">
         <img
           src={cover.src}
           alt=""
@@ -342,19 +345,52 @@ function GridCard({ project, index }: { project: Project; index: number }) {
           height={cover.height}
           loading="lazy"
           style={{ objectPosition: project.cover.position }}
-          className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
+          className="absolute inset-0 h-full w-full object-cover transition-all duration-[1400ms] ease-out group-hover:scale-110 group-hover:opacity-50 group-focus-visible:scale-110 group-focus-visible:opacity-50"
         />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/60 via-transparent to-bg/10" />
-        <LogoPlate project={project} className="absolute left-5 top-5" />
-        <span className="absolute right-5 top-5 font-display text-[1.1rem] tabular-nums text-ink/80">{pad(index + 1)}</span>
-        <span className="absolute bottom-5 right-5 grid h-11 w-11 place-items-center rounded-full bg-lav text-bg transition-transform duration-500 ease-back group-hover:rotate-45">
-          <ArrowUpRight size={19} />
-        </span>
+        {/* resting gradient so the name stays readable */}
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/85 via-bg/10 to-bg/20" />
+        {/* hover: dark wash + glow */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-bg/60 via-bg/55 to-bg/95 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100"
+        />
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-[42%] h-[70%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(var(--c-lav)/0.28),transparent)] opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-focus-visible:opacity-100"
+        />
+
+        {/* hover: number + arrow */}
+        <div className="relative z-10 flex items-center justify-between p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
+          <span className="font-display text-[1.05rem] tabular-nums text-ink/70">{pad(index + 1)}</span>
+          <span className="grid h-11 w-11 place-items-center rounded-full bg-lav text-bg transition-transform duration-500 ease-back group-hover:rotate-45">
+            <ArrowUpRight size={19} />
+          </span>
+        </div>
+
+        {/* hover: big logo */}
+        <div className="relative z-10 grid flex-1 place-items-center px-6">
+          <LogoPlate
+            project={project}
+            large
+            className="scale-90 opacity-0 transition-all duration-700 ease-out group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100"
+          />
+        </div>
+
+        {/* always: name + counts. hover: description slides in */}
+        <div className="relative z-10 p-6 pt-2">
+          <h3 className="font-display text-[clamp(1.4rem,2.1vw,1.85rem)] leading-[1.08] text-ink">{project.name}</h3>
+          <div className="grid grid-rows-[0fr] transition-all duration-500 ease-out group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr]">
+            <p className="overflow-hidden text-[14px] leading-relaxed text-ink/65 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="line-clamp-2 block pt-2">{project.subtitle}</span>
+            </p>
+          </div>
+          {meta.length > 0 && (
+            <p className="mt-3 text-[13px] text-ink/75 transition-colors duration-500 group-hover:border-t group-hover:border-ink/10 group-hover:pt-3.5 group-hover:text-[12.5px] group-hover:uppercase group-hover:tracking-[0.12em] group-hover:text-ink/55">
+              {meta.join("  ·  ")}
+            </p>
+          )}
+        </div>
       </div>
-      <h3 className="mt-5 font-display text-[clamp(1.4rem,2.2vw,1.9rem)] leading-[1.08] transition-colors duration-300 group-hover:text-lav">
-        {project.name}
-      </h3>
-      {meta.length > 0 && <p className="mt-1.5 text-[14px] text-faint">{meta.join(" · ")}</p>}
     </Link>
   );
 }
@@ -366,7 +402,7 @@ export default function Works() {
   );
 
   const [filter, setFilter] = useState<Filter>("All");
-  const [view, setView] = useState<View>("showcase");
+  const [view, setView] = useState<View>("grid");
   const list = filter === "All" ? clients : clients.filter((p) => clientDisciplines(p).includes(filter));
   const count = (f: Filter) => (f === "All" ? clients.length : clients.filter((p) => clientDisciplines(p).includes(f)).length);
   const featured = view === "showcase" ? list.slice(0, FEATURED_COUNT) : [];

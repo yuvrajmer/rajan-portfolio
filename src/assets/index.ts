@@ -83,6 +83,28 @@ import a66 from "./wos/2025-greeting-2.webp";
 import a67 from "./wos/2025-social-1.webp";
 import a68 from "./wos/2025-social-2.webp";
 
+import n0 from "./ceramic/hero-flavour-aura.webp";
+import n1 from "./ceramic/hero-ggcl-lucida.webp";
+import n2 from "./ceramic/hero-hindgres-riverconnect.webp";
+import n3 from "./ceramic/hero-lemzon-tecnost.webp";
+import n4 from "./ceramic/hero-lemzon.webp";
+import n5 from "./ceramic/sm-cruso-quartz.webp";
+import n6 from "./ceramic/sm-evolution.webp";
+import n7 from "./ceramic/sm-flavour-post.webp";
+import n8 from "./ceramic/sm-grenic-elevation.webp";
+import n9 from "./ceramic/sm-grenic-post.webp";
+import n10 from "./ceramic/sm-grenic-tile-collection.webp";
+import n11 from "./maya/farm-first-shot.webp";
+import n12 from "./maya/showreel-placeholder.webp";
+import n13 from "./maya/spread-03.webp";
+import n14 from "./maya/spread-04.webp";
+import n15 from "./maya/spread-05.webp";
+import n16 from "./maya/spread-06.webp";
+import n17 from "./maya/spread-07.webp";
+import n18 from "./maya/spread-10.webp";
+import n19 from "./maya/spread-11.webp";
+import n20 from "./covers/maya-max.webp";
+
 export type ImageAsset = { src: string; width: number; height: number };
 
 const assets = {
@@ -167,6 +189,27 @@ const assets = {
   "wos/2025-greeting-2": { src: a66, width: 450, height: 800 },
   "wos/2025-social-1": { src: a67, width: 450, height: 800 },
   "wos/2025-social-2": { src: a68, width: 450, height: 800 },
+  "ceramic/hero-flavour-aura": { src: n0, width: 960, height: 540 },
+  "ceramic/hero-ggcl-lucida": { src: n1, width: 960, height: 540 },
+  "ceramic/hero-hindgres-riverconnect": { src: n2, width: 960, height: 540 },
+  "ceramic/hero-lemzon-tecnost": { src: n3, width: 960, height: 540 },
+  "ceramic/hero-lemzon": { src: n4, width: 960, height: 540 },
+  "ceramic/sm-cruso-quartz": { src: n5, width: 900, height: 900 },
+  "ceramic/sm-evolution": { src: n6, width: 900, height: 900 },
+  "ceramic/sm-flavour-post": { src: n7, width: 900, height: 900 },
+  "ceramic/sm-grenic-elevation": { src: n8, width: 900, height: 900 },
+  "ceramic/sm-grenic-post": { src: n9, width: 900, height: 900 },
+  "ceramic/sm-grenic-tile-collection": { src: n10, width: 900, height: 900 },
+  "maya/farm-first-shot": { src: n11, width: 960, height: 540 },
+  "maya/showreel-placeholder": { src: n12, width: 960, height: 540 },
+  "maya/spread-03": { src: n13, width: 2000, height: 1415 },
+  "maya/spread-04": { src: n14, width: 2000, height: 1415 },
+  "maya/spread-05": { src: n15, width: 2000, height: 1415 },
+  "maya/spread-06": { src: n16, width: 2000, height: 1415 },
+  "maya/spread-07": { src: n17, width: 2000, height: 1415 },
+  "maya/spread-10": { src: n18, width: 2000, height: 1415 },
+  "maya/spread-11": { src: n19, width: 2000, height: 1415 },
+  "covers/maya-max": { src: n20, width: 716, height: 1040 },
 } as const satisfies Record<string, ImageAsset>;
 
 export type ImageKey = keyof typeof assets;

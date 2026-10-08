@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { img } from "../../assets";
-import { getProject } from "../../data/projects";
+import { CLIENT_SLUGS, getProject } from "../../data/projects";
 
 /**
  * F1H2O, SCTDA, Summer Promotions, Week of Stars, and Shurooq are campaigns
@@ -11,7 +11,7 @@ import { getProject } from "../../data/projects";
  * separate, standalone client) render nothing here.
  */
 export function NextProject({ slug }: { slug: string }) {
-  if (slug === "visit-sharjah" || slug === "continental") return null;
+  if (slug === "visit-sharjah" || (CLIENT_SLUGS as readonly string[]).includes(slug)) return null;
 
   const visitSharjah = getProject("visit-sharjah");
   if (!visitSharjah) return null;

@@ -3,6 +3,9 @@ import { img } from "../../assets";
 import { site } from "../../data/site";
 import { Reveal } from "../ui/Reveal";
 
+/** Badge diameter in px — identical for every software icon. */
+const BADGE = 108;
+
 export function Toolkit() {
   const reduce = useReducedMotion();
 
@@ -32,7 +35,7 @@ export function Toolkit() {
             <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)]">Software</h2>
           </Reveal>
 
-          {/* Floating icon cluster — badge size scales with proficiency, glow halo, full-color icons */}
+          {/* Floating icon cluster — every badge is the same size, glow halo, full-color icons */}
           <div className="relative mt-16 flex flex-wrap items-end gap-x-12 gap-y-16 sm:gap-x-16">
             <svg
               aria-hidden
@@ -46,7 +49,7 @@ export function Toolkit() {
 
             {site.software.map((t, i) => {
               const a = img(t.icon);
-              const size = 68 + t.level * 48; // 68px .. 116px, driven by t.level
+              const size = BADGE; // one fixed size for every tool (no longer driven by t.level)
               const accent = i % 2 === 0 ? "lav" : "ember";
               return (
                 <Reveal key={t.name} delay={i * 0.08} y={24}>
@@ -75,7 +78,8 @@ export function Toolkit() {
                         height={a.height}
                         alt=""
                         loading="lazy"
-                        className="h-[56%] w-[56%] object-contain drop-shadow-[0_4px_14px_rgb(var(--sh)/0.4)]"
+                        style={{ width: `${t.fit}%` }}
+                        className="h-auto object-contain drop-shadow-[0_4px_14px_rgb(var(--sh)/0.4)]"
                       />
                       <span
                         aria-hidden

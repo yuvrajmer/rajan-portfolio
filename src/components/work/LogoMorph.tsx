@@ -32,12 +32,21 @@ export function LogoMorph() {
   const nearest = Math.round(p);
 
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-[minmax(0,200px)_minmax(0,1fr)]">
-      <figure className="hidden sm:block">
-        <div className="overflow-hidden rounded-t-[999px] rounded-b-2xl border border-lav/15 bg-surface">
-          <img src={arch.src} width={arch.width} height={arch.height} alt="Archway design reference used for the transition" loading="lazy" className="aspect-[4/5] w-full object-cover" />
-        </div>
-        <figcaption className="mt-3 text-[13px] text-faint">Archway design reference used for transition</figcaption>
+    <div className="mt-8 grid items-stretch gap-4 sm:grid-cols-[minmax(0,220px)_minmax(0,1fr)]">
+      {/* Archway reference — stretches to the exact height of the player card beside it,
+          so the image and the video panel always line up top and bottom. */}
+      <figure className="relative hidden min-h-[340px] overflow-hidden rounded-t-[999px] rounded-b-2xl border border-lav/15 bg-surface sm:block">
+        <img
+          src={arch.src}
+          width={arch.width}
+          height={arch.height}
+          alt="Archway design reference used for the transition"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-4 pb-4 pt-12 text-[12.5px] leading-snug text-white/90">
+          Archway design reference used for transition
+        </figcaption>
       </figure>
 
       <div className="rounded-card border border-lav/15 bg-surface/60 p-4 sm:p-5">
@@ -56,7 +65,7 @@ export function LogoMorph() {
                 height={a.height}
                 draggable={false}
                 style={{ opacity: o, transform: `scale(${1 + d * 0.12})`, filter: `blur(${Math.abs(d) * 9}px)` }}
-                className="absolute inset-0 m-auto max-h-[70%] max-w-[70%] object-contain will-change-[opacity,transform,filter]"
+                className="absolute inset-0 m-auto h-[68%] w-[68%] object-contain will-change-[opacity,transform,filter]"
               />
             );
           })}

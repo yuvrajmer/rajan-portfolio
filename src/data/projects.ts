@@ -38,7 +38,8 @@ export type Project = {
   slug: string;
   name: string;
   shortName: string;
-  logo: ImageKey;
+  /** Optional — companies without a logo file fall back to their name set as a wordmark. */
+  logo?: ImageKey;
   subtitle: string;
   years?: string;
   disciplines: Discipline[];
@@ -195,7 +196,7 @@ export const projects: Project[] = [
           {
             title: "Role & Contribution",
             body: [
-              "Responsible for motion graphics, video editing, typography animation, and social media design, ensuring a consistent visual identity across digital platforms.",
+              "Responsible for motion graphics, typography animation, and social media design, ensuring a consistent visual identity across digital platforms.",
             ],
           },
           { title: "Tools Used", tools: [AE, PS, AI] },
@@ -287,7 +288,7 @@ export const projects: Project[] = [
               },
             ],
           },
-          { title: "Tools Used", tools: ["3D CGI", AE, PS, AI] },
+          { title: "Tools Used", tools: [AE, PS, AI] },
         ],
       },
     ],
@@ -761,11 +762,6 @@ export const projects: Project[] = [
                   v("https://youtu.be/VoDNjHaiytA", "Explainer Khorfakkan", "shurooq/2025-explainer-khorfakkan"),
                 ],
               },
-              {
-                kind: "videos",
-                label: "Al Heera 2D VFX",
-                items: [v("https://youtube.com/shorts/LWFjMcYbeZI", "Al Heera 2D VFX", "shurooq/2025-heera-vfx")],
-              },
             ],
           },
           {
@@ -788,6 +784,13 @@ export const projects: Project[] = [
             title: "Motion Graphics & 3D Integration",
             body: [
               "Added and animated consistent branded elements across all reels using Adobe After Effects and Blender, ensuring a cohesive visual identity throughout the campaign.",
+            ],
+            media: [
+              {
+                kind: "videos",
+                label: "Al Heera 2D VFX",
+                items: [v("https://youtube.com/shorts/LWFjMcYbeZI", "Al Heera 2D VFX", "shurooq/2025-heera-vfx")],
+              },
             ],
           },
           {
@@ -817,6 +820,9 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Hero Video",
+                // SOUND: if this Short is still silent on your site (YouTube can mute embeds of videos that use licensed music),
+                // host the file yourself — drop the mp4 in /public/video/ and pass it as the 4th argument:
+                // v("https://youtube.com/shorts/t-x9jRW_x7s", "2026 Hero Video", "shurooq/2026-hero", "/video/shurooq-ramadan-2026-hero.mp4")
                 items: [v("https://youtube.com/shorts/t-x9jRW_x7s", "2026 Hero Video", "shurooq/2026-hero")],
               },
             ],
@@ -843,6 +849,212 @@ export const projects: Project[] = [
             body: ["Responsible for hero video enhancements - motion graphics, reel production throughout the campaign."],
           },
           { title: "Tools Used", tools: [AE, PS, AI] },
+        ],
+      },
+    ],
+  },
+
+  /* =========================== CERAMIC POSTS ====================== */
+  // Built from Ceramic_Posts.zip (hero videos + social posts) and the copy in the "Maya & Max" assignment PDF.
+  // ⚠ PLACEHOLDERS to review: the company name (taken from the zip name) and logo (none was supplied — a
+  //   text wordmark is shown until you add `logo: "logo/ceramic-posts"`), and the Grenic post 01/02 order.
+  {
+    slug: "ceramic-posts",
+    name: "Ceramic Posts",
+    shortName: "Ceramic Posts",
+    subtitle: "Launch videos and social posts for ceramic tile collections.",
+    disciplines: ["3D & CGI", "Motion graphics", "Social campaigns"],
+    cover: { key: "ceramic/sm-cruso-quartz", position: "50% 50%" },
+    intro: [
+      "Product launch videos and social media posts for ceramic and tile brands — Flavour, Lemzon, GGCL, Hindgres, Grenic, Cruso and Evolution. The work blends 3D tile renders with footage and motion graphics to show each collection at its best.",
+    ],
+    tags: ["Product Launch", "3D Animation", "Social Campaign"],
+    chapters: [
+      {
+        id: "launch",
+        tab: "Launch Videos",
+        title: "Product Launch Videos",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "Launch films for new tile collections — colourful 3D tiles merged with footage and animated with motion graphics, including the Aura, Tecnost and River Connect collections.",
+            ],
+          },
+          {
+            title: "Hero Videos",
+            media: [
+              {
+                kind: "videos",
+                label: "Hero Videos",
+                items: [
+                  v("https://youtu.be/_XAOG2Snt0w", "Flavour – Aura Series", "ceramic/hero-flavour-aura"),
+                  v("https://youtu.be/5PocSWqFqKY", "Lemzon – Tecnost", "ceramic/hero-lemzon-tecnost"),
+                  v("https://youtu.be/4DiPaHpF7Vk", "Lemzon – Limitless Space", "ceramic/hero-lemzon"),
+                  v("https://youtu.be/BLZ45KRzM1Q", "GGCL – Lucida", "ceramic/hero-ggcl-lucida"),
+                  v("https://youtube.com/shorts/epyKtTfsR-U", "Hindgres – River Connect", "ceramic/hero-hindgres-riverconnect"),
+                ],
+              },
+            ],
+          },
+          { title: "Tools Used", tools: ["3ds Max", AE, "Cinema 4D"] },
+        ],
+      },
+      {
+        id: "social",
+        tab: "Social Posts",
+        title: "Social Media Product Posts",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "Short launch posts for tile collections — 3D walls and elevation tiles dressed with dramatic lighting and music, a new quartz collection reveal, and a first use of character animation in a ceramic post.",
+            ],
+          },
+          {
+            title: "Social Media Posts",
+            media: [
+              {
+                kind: "videos",
+                label: "Social Media Assets",
+                items: [
+                  v("https://youtube.com/shorts/sk0uNryPKWo", "Cruso – Quartz", "ceramic/sm-cruso-quartz"),
+                  v("https://youtube.com/shorts/123eFEweRK0", "Evolution", "ceramic/sm-evolution"),
+                  // ⚠ Links.txt lists "Grenic Elevation post 01 / 02" without saying which image is which — swap if reversed.
+                  v("https://youtube.com/shorts/RXfGuxcvJsg", "Grenic Elevation – Post 01", "ceramic/sm-grenic-post"),
+                  v("https://youtube.com/shorts/GzyvRmfliC8", "Grenic Elevation – Post 02", "ceramic/sm-grenic-elevation"),
+                  v("https://youtube.com/shorts/1Do8vdP--BI", "Grenic – Tile Collection", "ceramic/sm-grenic-tile-collection"),
+                ],
+              },
+              {
+                // ⚠ No video link was supplied for this one, so it opens as an image.
+                kind: "stills",
+                label: "Flavour Post",
+                items: [{ key: "ceramic/sm-flavour-post", alt: "Flavour post" }],
+              },
+            ],
+          },
+          { title: "Tools Used", tools: ["3ds Max", AE, PS] },
+        ],
+      },
+    ],
+  },
+
+  /* ======================= MAYA & MAX ASSIGNMENTS ================= */
+  // Built from Maya_&_Max_Assignments.zip — the assignment pages are shown as stills (click to enlarge).
+  // ⚠ PLACEHOLDERS to review: no logo was supplied (text wordmark shown), the showreel thumbnail is a
+  //   neutral placeholder (replace maya/showreel-placeholder with a real frame), and the tool chips.
+  {
+    slug: "maya-max-assignments",
+    name: "Maya & Max Assignments",
+    shortName: "Maya & Max",
+    subtitle: "3D modelling, rigging, animation and sketching assignments.",
+    disciplines: ["3D & CGI", "Motion graphics"],
+    cover: { key: "maya/farm-first-shot", position: "50% 50%" }, // wide frame suits the wide card slots; swap back to "covers/maya-max" for the page collage
+    intro: [
+      "A collection of assignment work in Autodesk Maya and 3ds Max — a short story film, character and environment models, rigging and animation, and a sketchbook of animals and people.",
+    ],
+    tags: ["3D Modelling", "Rigging", "Animation", "Sketching"],
+    chapters: [
+      {
+        id: "farmer",
+        tab: "The Farmer & Farm",
+        title: "Project 01 – The Farmer and Farm",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "A short story about a farmer\u2019s struggle and how he handles it. I started from the story itself — storyboarding it around the bond between the characters — then built the scenes around three rigged characters: a seagull, the farmer Malcolm and an ox.",
+            ],
+          },
+          {
+            title: "Characters & Environment",
+            body: [
+              "The seagull introduces the story in the first shot. Malcolm\u2019s rig had a lot of cloth variety, so I turned it into the farmer. The ox was given extra expression and a walk cycle based on real footage and sketches. Each page shows the storyboard, the model, a clay render of the farm and a shot from the film.",
+            ],
+            media: [
+              {
+                kind: "stills",
+                label: "Storyboards, models & clay renders",
+                items: [
+                  { key: "maya/spread-03", alt: "The Farmer and Farm – seagull storyboard, model and first shot" },
+                  { key: "maya/spread-04", alt: "The Farmer and Farm – Malcolm the farmer, storyboard and shots" },
+                  { key: "maya/spread-05", alt: "The Farmer and Farm – the ox, storyboard and shots" },
+                  { key: "maya/spread-06", alt: "The Farmer and Farm – final output page" },
+                ],
+              },
+            ],
+          },
+          {
+            title: "Final Film",
+            media: [
+              {
+                kind: "videos",
+                label: "The Farmer and Farm",
+                items: [v("https://youtu.be/kwDmyHMDDKU", "The Farmer and Farm", "maya/farm-first-shot")],
+              },
+            ],
+          },
+          { title: "Tools Used", tools: ["Autodesk Maya", "3ds Max"] },
+        ],
+      },
+      {
+        id: "other",
+        tab: "Other Work",
+        title: "Project 02 – Other Work",
+        sections: [
+          {
+            title: "Modelling, Rigging & Animation",
+            body: ["Some glimpses of my 3D modelling, rigging and animation assignments."],
+            media: [
+              {
+                kind: "stills",
+                label: "Assignment pages",
+                items: [
+                  { key: "maya/spread-06", alt: "Other work – castle, ship and building models" },
+                  { key: "maya/spread-07", alt: "Other work – characters, rigs and animation" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "sketching",
+        tab: "Sketching",
+        title: "Project 05 – Sketching",
+        sections: [
+          {
+            title: "Sketchbook",
+            body: ["Pencil and colour-pencil sketches of animals and people — anatomy studies, characters and portraits."],
+            media: [
+              {
+                kind: "stills",
+                label: "Sketching pages",
+                items: [
+                  { key: "maya/spread-10", alt: "Sketching – animals, anatomy and character studies" },
+                  { key: "maya/spread-11", alt: "Sketching – portrait studies" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "showreel",
+        tab: "Showreel",
+        title: "Showreel",
+        sections: [
+          {
+            title: "Showreel",
+            media: [
+              {
+                kind: "videos",
+                label: "Showreel – Rajan Tarakhala",
+                items: [v("https://youtu.be/JEIytO481bI", "Showreel – Rajan Tarakhala", "maya/showreel-placeholder")],
+              },
+            ],
+          },
         ],
       },
     ],
@@ -887,7 +1099,7 @@ export const siblingsOf = (slug: string): Project[] => {
  * add its project above, then put its slug here. (Campaigns delivered under a
  * company, like F1H2O under Visit Sharjah, stay out of this list.)
  */
-export const CLIENT_SLUGS = ["visit-sharjah", "continental"] as const;
+export const CLIENT_SLUGS = ["visit-sharjah", "continental", "ceramic-posts", "maya-max-assignments"] as const;
 export const clients: Project[] = CLIENT_SLUGS.map(getProject).filter((p): p is Project => Boolean(p));
 
 /** How many companies the home page "Selected work" section shows. */

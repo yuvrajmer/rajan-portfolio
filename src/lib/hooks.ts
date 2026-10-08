@@ -29,6 +29,39 @@ export function useMediaQuery(query: string) {
   return matches;
 }
 
+/**
+ * True once the first load has finished: window `load` + web fonts ready,
+ * held for at least `minMs` (so the splash never flickers) and capped at
+ * `maxMs` (so a stalled asset can never trap the visitor behind it).
+ */
+export function usePageReady(minMs = 700, maxMs = 8000) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let done = false;
+    const finish = () => {
+      if (!done) {
+        done = true;
+        setReady(true);
+      }
+    };
+    const started = performance.now();
+    const loaded = new Promise<void>((res) => {
+      if (document.readyState === "complete") res();
+      else window.addEventListener("load", () => res(), { once: true });
+    });
+    const fonts = document.fonts?.ready ?? Promise.resolve();
+    Promise.all([loaded, fonts]).then(() => {
+      window.setTimeout(finish, Math.max(0, minMs - (performance.now() - started)));
+    });
+    const cap = window.setTimeout(finish, maxMs);
+    return () => {
+      done = true;
+      window.clearTimeout(cap);
+    };
+  }, [minMs, maxMs]);
+  return ready;
+}
+
 export const useIsMac = () =>
   typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 

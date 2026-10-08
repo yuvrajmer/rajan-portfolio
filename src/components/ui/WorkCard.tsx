@@ -4,11 +4,22 @@ import { videoCount, type Project } from "../../data/projects";
 import { cn } from "../../lib/cn";
 
 /** Logo on a light plate — keeps every brand legible on the dark theme. */
-export function LogoPlate({ project, className }: { project: Project; className?: string }) {
-  const a = img(project.logo);
+export function LogoPlate({ project, className, large }: { project: Project; className?: string; large?: boolean }) {
+  // PLACEHOLDER: companies without a logo file show their name as a wordmark until a logo is added.
+  const a = project.logo ? img(project.logo) : null;
   return (
-    <span className={cn("surface-dark inline-flex items-center rounded-xl bg-ink px-3.5 py-2.5", className)}>
-      <img src={a.src} alt="" width={a.width} height={a.height} className="h-6 w-auto max-w-[130px] object-contain" />
+    <span className={cn(
+        "surface-dark inline-flex items-center bg-ink",
+        large ? "rounded-2xl px-6 py-5 shadow-[0_20px_50px_-15px_rgb(0_0_0/.6)]" : "rounded-xl px-3.5 py-2.5",
+        className
+      )}>
+      {a ? (
+        <img src={a.src} alt="" width={a.width} height={a.height} className={cn("w-auto object-contain", large ? "h-11 max-w-[200px]" : "h-6 max-w-[130px]")} />
+      ) : (
+        <span className={cn("whitespace-nowrap font-display font-medium tracking-wide text-bg", large ? "text-[22px] leading-10" : "text-[13px] leading-6")}>
+          {project.shortName}
+        </span>
+      )}
     </span>
   );
 }

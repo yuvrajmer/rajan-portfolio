@@ -41,7 +41,20 @@
     <link rel="preload" href="/fonts/NeueMachina-Medium.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Pre-React loader: visible while the JS bundle downloads; React replaces it on mount.
+         Colours mirror --c-lav / --c-ember / --c-bg in styles/theme.css (that file isn't loaded yet). -->
+    <div id="root">
+      <style>
+        #boot{position:fixed;inset:0;display:grid;place-items:center;background:#060714}
+        :root[data-theme="light"] #boot{background:#F7F4ED}
+        #boot i{position:absolute;width:56px;height:56px;border-radius:50%;animation:boot 1.4s cubic-bezier(.16,1,.3,1) infinite alternate}
+        #boot i:first-child{background:rgba(159,154,255,.5);margin-right:24px;--x:12px}
+        #boot i:last-child{background:#FF7B39;margin-left:24px;--x:-12px}
+        @keyframes boot{to{transform:translateX(var(--x))}}
+        @media (prefers-reduced-motion:reduce){#boot i{animation:none}}
+      </style>
+      <div id="boot" role="status" aria-label="Loading"><i></i><i></i></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

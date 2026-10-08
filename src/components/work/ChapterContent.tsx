@@ -59,7 +59,7 @@ function SectionBlock({
 
       {section.tools && (
         <div className={toolsOnly ? "mt-6 flex flex-wrap gap-2.5" : "mt-8 flex flex-wrap items-center gap-2.5"}>
-          {!toolsOnly && <span className="mr-1 text-[13.5px] font-medium text-faint">Tools</span>}
+          {!toolsOnly && <span className="mr-1 text-[13.5px] font-medium text-faint">Tools Used</span>}
           {section.tools.map((t) => (
             <Chip key={t}>{t}</Chip>
           ))}
