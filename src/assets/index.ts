@@ -100,10 +100,53 @@ import n13 from "./maya/spread-03.webp";
 import n14 from "./maya/spread-04.webp";
 import n15 from "./maya/spread-05.webp";
 import n16 from "./maya/spread-06.webp";
-import n17 from "./maya/spread-07.webp";
-import n18 from "./maya/spread-10.webp";
-import n19 from "./maya/spread-11.webp";
 import n20 from "./covers/maya-max.webp";
+import s01 from "./maya/sketch-01.webp";
+import s02 from "./maya/sketch-02.webp";
+import s03 from "./maya/sketch-03.webp";
+import s04 from "./maya/sketch-04.webp";
+import s05 from "./maya/sketch-05.webp";
+import s06 from "./maya/sketch-06.webp";
+import s07 from "./maya/sketch-07.webp";
+import s08 from "./maya/sketch-08.webp";
+import s09 from "./maya/sketch-09.webp";
+import s10 from "./maya/sketch-10.webp";
+import s11 from "./maya/sketch-11.webp";
+import s12 from "./maya/sketch-12.webp";
+import s13 from "./maya/sketch-13.webp";
+import s14 from "./maya/sketch-14.webp";
+
+import nt0 from "./nothing/cgi-cmf-phone.webp";
+import nt1 from "./nothing/cgi-2a.webp";
+import nt2 from "./nothing/cgi-3a.webp";
+import nt3 from "./nothing/cgi-phone3.webp";
+import nt4 from "./nothing/sm-cmf-giveaway.webp";
+import nt5 from "./nothing/sm-eid.webp";
+import nt6 from "./nothing/sm-100-drops.webp";
+import nt7 from "./nothing/sm-giveaway-week-01.webp";
+import nt8 from "./nothing/sm-giveaway-week-02.webp";
+import nt9 from "./nothing/bts-cmf-footage.webp";
+import nt10 from "./nothing/bts-cmf-model-1.webp";
+import nt11 from "./nothing/bts-cmf-model-2.webp";
+import nt12 from "./nothing/bts-cmf-model-3.webp";
+import nt13 from "./nothing/bts-3a-model-1.webp";
+import nt14 from "./nothing/bts-3a-model-2.webp";
+import nt15 from "./nothing/bts-3a-model-3.webp";
+import nt16 from "./nothing/bts-phone3-footage.webp";
+import ntLogo from "./logo/nothing.webp";
+
+import ag0 from "./alghandi/cgi-chevrolet-offer.webp";
+import ag1 from "./alghandi/cgi-gmc-offer.webp";
+import ag2 from "./alghandi/cgi-heart-anim.webp";
+import ag3 from "./alghandi/cgi-family-day.webp";
+import ag4 from "./alghandi/cgi-tamam-used-cars.webp";
+import ag5 from "./alghandi/sm-abarth-broll.webp";
+import ag6 from "./alghandi/sm-canyon-drift.webp";
+import ag7 from "./alghandi/sm-hummer-background.webp";
+import ag8 from "./alghandi/sm-chevy-halloween.webp";
+import ag9 from "./alghandi/kv-chevy-national-day.webp";
+import ag10 from "./alghandi/kv-gmc-national-day.webp";
+import agLogo from "./logo/al-ghandi.webp";
 
 export type ImageAsset = { src: string; width: number; height: number };
 
@@ -206,10 +249,51 @@ const assets = {
   "maya/spread-04": { src: n14, width: 2000, height: 1415 },
   "maya/spread-05": { src: n15, width: 2000, height: 1415 },
   "maya/spread-06": { src: n16, width: 2000, height: 1415 },
-  "maya/spread-07": { src: n17, width: 2000, height: 1415 },
-  "maya/spread-10": { src: n18, width: 2000, height: 1415 },
-  "maya/spread-11": { src: n19, width: 2000, height: 1415 },
   "covers/maya-max": { src: n20, width: 716, height: 1040 },
+  "maya/sketch-01": { src: s01, width: 1160, height: 1480 },
+  "maya/sketch-02": { src: s02, width: 1576, height: 1161 },
+  "maya/sketch-03": { src: s03, width: 1225, height: 1200 },
+  "maya/sketch-04": { src: s04, width: 1600, height: 1200 },
+  "maya/sketch-05": { src: s05, width: 1243, height: 1200 },
+  "maya/sketch-06": { src: s06, width: 1600, height: 1200 },
+  "maya/sketch-07": { src: s07, width: 1600, height: 1200 },
+  "maya/sketch-08": { src: s08, width: 1501, height: 1074 },
+  "maya/sketch-09": { src: s09, width: 1600, height: 1128 },
+  "maya/sketch-10": { src: s10, width: 1558, height: 1071 },
+  "maya/sketch-11": { src: s11, width: 1600, height: 1125 },
+  "maya/sketch-12": { src: s12, width: 1369, height: 1089 },
+  "maya/sketch-13": { src: s13, width: 1140, height: 1564 },
+  "maya/sketch-14": { src: s14, width: 1600, height: 1200 },
+  "nothing/cgi-cmf-phone": { src: nt0, width: 800, height: 1422 },
+  "nothing/cgi-2a": { src: nt1, width: 800, height: 1422 },
+  "nothing/cgi-3a": { src: nt2, width: 800, height: 1422 },
+  "nothing/cgi-phone3": { src: nt3, width: 800, height: 1422 },
+  "nothing/sm-cmf-giveaway": { src: nt4, width: 800, height: 1422 },
+  "nothing/sm-eid": { src: nt5, width: 800, height: 1422 },
+  "nothing/sm-100-drops": { src: nt6, width: 800, height: 1422 },
+  "nothing/sm-giveaway-week-01": { src: nt7, width: 800, height: 1422 },
+  "nothing/sm-giveaway-week-02": { src: nt8, width: 800, height: 1422 },
+  "nothing/bts-cmf-footage": { src: nt9, width: 800, height: 1422 },
+  "nothing/bts-cmf-model-1": { src: nt10, width: 571, height: 1000 },
+  "nothing/bts-cmf-model-2": { src: nt11, width: 566, height: 998 },
+  "nothing/bts-cmf-model-3": { src: nt12, width: 566, height: 998 },
+  "nothing/bts-3a-model-1": { src: nt13, width: 800, height: 1404 },
+  "nothing/bts-3a-model-2": { src: nt14, width: 800, height: 1404 },
+  "nothing/bts-3a-model-3": { src: nt15, width: 800, height: 1404 },
+  "nothing/bts-phone3-footage": { src: nt16, width: 800, height: 1422 },
+  "logo/nothing": { src: ntLogo, width: 710, height: 95 },
+  "alghandi/cgi-chevrolet-offer": { src: ag0, width: 800, height: 1422 },
+  "alghandi/cgi-gmc-offer": { src: ag1, width: 800, height: 1422 },
+  "alghandi/cgi-heart-anim": { src: ag2, width: 800, height: 1422 },
+  "alghandi/cgi-family-day": { src: ag3, width: 800, height: 1422 },
+  "alghandi/cgi-tamam-used-cars": { src: ag4, width: 800, height: 1422 },
+  "alghandi/sm-abarth-broll": { src: ag5, width: 800, height: 1422 },
+  "alghandi/sm-canyon-drift": { src: ag6, width: 800, height: 1422 },
+  "alghandi/sm-hummer-background": { src: ag7, width: 800, height: 1422 },
+  "alghandi/sm-chevy-halloween": { src: ag8, width: 800, height: 1422 },
+  "alghandi/kv-chevy-national-day": { src: ag9, width: 960, height: 540 },
+  "alghandi/kv-gmc-national-day": { src: ag10, width: 960, height: 540 },
+  "logo/al-ghandi": { src: agLogo, width: 710, height: 130 },
 } as const satisfies Record<string, ImageAsset>;
 
 export type ImageKey = keyof typeof assets;

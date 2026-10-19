@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useInView, useReducedMotion } from "framer-motion";
 import { img } from "../../assets";
@@ -25,7 +25,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * Selected work — an expanding-panel slider.
  * One company is open (big, with its stats and a call to action); the others fold into slim
  * tabs beside it. Click a tab, use the arrows / ← → keys, swipe, or just let it play —
- * it advances on its own, and pauses when you hover it, scroll away, or press pause.
+ * it advances on its own, and pauses when you hover it or scroll away.
  * Which companies appear (and their order) lives in data/projects.ts → CLIENT_SLUGS.
  */
 export function SelectedWork() {
@@ -42,11 +42,10 @@ export function SelectedWork() {
   const inView = useInView(sliderRef, { amount: 0.3 });
   const [active, setActive] = useState(0);
   const [tick, setTick] = useState(0); // bumps on every change so the timer + progress bar restart
-  const [playing, setPlaying] = useState(true);
   const [hover, setHover] = useState(false);
   const swipe = useRef<number | null>(null);
 
-  const running = n > 1 && playing && inView && !hover && !reduce;
+  const running = n > 1 && inView && !hover && !reduce;
 
   const go = (i: number) => {
     setActive(((i % n) + n) % n);
@@ -71,7 +70,7 @@ export function SelectedWork() {
           <p className="mt-5 max-w-[58ch] text-lg text-muted">
             A long-running partnership with Visit Sharjah — spanning {campaignCount} campaigns and{" "}
             {visitSharjahVideos} videos and reels, from logo reveals and CGI to full social campaigns — alongside
-            CGI and social work for Continental, launch videos and posts for ceramic brands, and a set of 3D
+            CGI and social work for Continental, Nothing and Al Ghandi Auto, launch videos and posts for ceramic brands, and a set of 3D
             character and animation assignments.
           </p>
         </div>
@@ -113,7 +112,7 @@ export function SelectedWork() {
           ))}
         </ul>
 
-        {/* Controls: story-style progress segments + arrows */}
+        {/* Story-style progress segments */}
         <div className="mt-6 flex items-center gap-4 sm:gap-6">
           <div className="flex flex-1 gap-2 sm:gap-3" role="tablist" aria-label="Choose a company">
             {items.map((p, i) => (
@@ -135,7 +134,7 @@ export function SelectedWork() {
                           ? undefined
                           : {
                               animation: `sw-progress ${INTERVAL}ms linear forwards`,
-                              // pausing (hover / paused / off-screen) freezes the bar instead of resetting it
+                              // pausing (hover / off-screen) freezes the bar instead of resetting it
                               animationPlayState: running ? "running" : "paused",
                             }
                       }
@@ -154,27 +153,6 @@ export function SelectedWork() {
             ))}
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
-            {!reduce && (
-              <button
-                onClick={() => setPlaying((v) => !v)}
-                aria-label={playing ? "Pause autoplay" : "Resume autoplay"}
-                className="grid h-11 w-11 place-items-center rounded-full border border-lav/20 text-ink transition-colors hover:border-lav/60 hover:bg-lav/10"
-              >
-                {playing ? <Pause size={16} /> : <Play size={16} className="ml-0.5" />}
-              </button>
-            )}
-            {([-1, 1] as const).map((d) => (
-              <button
-                key={d}
-                onClick={() => go(active + d)}
-                aria-label={d === 1 ? "Next company" : "Previous company"}
-                className="grid h-11 w-11 place-items-center rounded-full border border-lav/20 text-ink transition-all duration-300 ease-back hover:scale-105 hover:border-lav hover:bg-lav hover:text-bg"
-              >
-                {d === 1 ? <ChevronRight size={19} /> : <ChevronLeft size={19} />}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </section>

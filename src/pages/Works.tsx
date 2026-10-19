@@ -162,8 +162,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, animate, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, LayoutGrid, Rows3 } from "lucide-react";
+import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Check, ChevronDown } from "lucide-react";
 import { img } from "../assets";
 import {
   campaignsOf,
@@ -177,13 +177,9 @@ import {
 import { cn } from "../lib/cn";
 import { useDocumentMeta } from "../lib/hooks";
 import { LogoPlate } from "../components/ui/WorkCard";
-import { Reveal } from "../components/ui/Reveal";
 
 type Filter = "All" | Discipline;
-type View = "showcase" | "grid";
 
-/** Showcase view: this many companies get the big panels, the rest drop into a compact grid. */
-const FEATURED_COUNT = 3;
 const EASE = [0.16, 1, 0.3, 1] as const;
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -201,128 +197,95 @@ function Count({ to }: { to: number }) {
   return <span ref={ref}>{v}</span>;
 }
 
-/** Cover that drifts slightly against the scroll — depth without weight. */
-function ParallaxCover({ project }: { project: Project }) {
-  const cover = img(project.cover.key);
+/** Discipline filter as a simple dropdown (closes on outside click / Esc / pick). */
+function FilterMenu({
+  value,
+  options,
+  count,
+  onChange,
+}: {
+  value: Filter;
+  options: Filter[];
+  count: (f: Filter) => number;
+  onChange: (f: Filter) => void;
+}) {
+  const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: box, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["-7%", "7%"]);
-  return (
-    <div ref={box} className="absolute inset-0 overflow-hidden">
-      <motion.img
-        src={cover.src}
-        alt=""
-        width={cover.width}
-        height={cover.height}
-        loading="lazy"
-        style={{ y, objectPosition: project.cover.position }}
-        className="absolute -inset-y-[9%] h-[118%] w-full object-cover transition-transform duration-[1400ms] ease-out group-hover/img:scale-[1.05]"
-      />
-    </div>
-  );
-}
 
-function Panel({ project, index }: { project: Project; index: number }) {
-  const flip = index % 2 === 1;
-  const campaigns = campaignsOf(project);
-  const videos = clientVideoCount(project);
-  const stats = [
-    campaigns.length > 0 && { label: "Campaigns", value: campaigns.length },
-    videos > 0 && { label: "Videos", value: videos },
-  ].filter(Boolean) as { label: string; value: number }[];
+  useEffect(() => {
+    if (!open) return;
+    const down = (e: MouseEvent) => {
+      if (box.current && !box.current.contains(e.target as Node)) setOpen(false);
+    };
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", down);
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("mousedown", down);
+      document.removeEventListener("keydown", key);
+    };
+  }, [open]);
 
   return (
-    <article className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
-      {/* Image */}
-      <Reveal className={cn("lg:col-span-7", flip && "lg:order-2")}>
-        <Link
-          to={`/work/${project.slug}`}
-          data-cursor="View"
-          aria-label={`Open ${project.name}`}
-          className="surface-dark group/img relative block aspect-[4/5] overflow-hidden rounded-[36px] border border-lav/20 bg-surface shadow-[0_40px_90px_-40px_rgb(var(--sh)/.6)] sm:aspect-[5/4] lg:aspect-[4/4.4]"
-        >
-          <ParallaxCover project={project} />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-bg/10" />
-          <LogoPlate project={project} className="absolute left-6 top-6 sm:left-8 sm:top-8" />
-          <span className="absolute bottom-6 right-6 grid h-14 w-14 place-items-center rounded-full bg-lav text-bg transition-transform duration-500 ease-back group-hover/img:rotate-45 sm:bottom-8 sm:right-8">
-            <ArrowUpRight size={24} />
-          </span>
-        </Link>
-      </Reveal>
-
-      {/* Copy */}
-      <Reveal delay={0.1} className={cn("relative lg:col-span-5", flip && "lg:order-1")}>
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -top-16 -left-2 select-none font-display text-[clamp(6rem,13vw,11rem)] leading-none text-transparent [-webkit-text-stroke:1px_rgb(var(--c-lav)/0.3)]"
-        >
-          {pad(index + 1)}
+    <div ref={box} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Filter by discipline"
+        className={cn(
+          "inline-flex min-w-[250px] items-center justify-between gap-4 rounded-full border bg-surface/60 py-2.5 pl-5 pr-4 text-[14.5px] font-medium backdrop-blur transition-colors",
+          open ? "border-lav" : "border-lav/25 hover:border-lav/60"
+        )}
+      >
+        <span className="flex items-center gap-2.5">
+          <span className="text-faint">Discipline</span>
+          <span className="text-ink">{value}</span>
+          <span className="rounded-full bg-lav/15 px-2 py-0.5 text-[12px] tabular-nums text-muted">{count(value)}</span>
         </span>
+        <ChevronDown size={17} className={cn("shrink-0 text-muted transition-transform duration-300", open && "rotate-180")} />
+      </button>
 
-        <div className="relative pt-16 lg:pt-24">
-          <Link to={`/work/${project.slug}`} className="group/title inline-block">
-            <h2 className="font-display text-[clamp(2.3rem,5vw,4.2rem)] leading-[1.02] transition-colors duration-500 group-hover/title:text-lav">
-              {project.name}
-            </h2>
-          </Link>
-          <p className="mt-5 max-w-[42ch] text-pretty text-[1.05rem] leading-relaxed text-muted">{project.subtitle}</p>
-
-          {(stats.length > 0 || project.years) && (
-            <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-5">
-              {stats.map((s) => (
-                <div key={s.label} className="border-l border-lav/25 pl-4">
-                  <dt className="text-[12px] uppercase tracking-[0.14em] text-faint">{s.label}</dt>
-                  <dd className="mt-1 font-display text-[2.2rem] leading-none tabular-nums">
-                    <Count to={s.value} />
-                  </dd>
-                </div>
-              ))}
-              {project.years && (
-                <div className="border-l border-lav/25 pl-4">
-                  <dt className="text-[12px] uppercase tracking-[0.14em] text-faint">Year</dt>
-                  <dd className="mt-1 font-display text-[2.2rem] leading-none tabular-nums">{project.years}</dd>
-                </div>
-              )}
-            </dl>
-          )}
-
-          <div className="mt-7 flex flex-wrap gap-1.5">
-            {clientDisciplines(project).map((d) => (
-              <span key={d} className="rounded-full border border-lav/20 px-3 py-1 text-[12.5px] text-muted">{d}</span>
-            ))}
-          </div>
-
-          {campaigns.length > 0 && (
-            <div className="mt-8">
-              <p className="text-[12px] uppercase tracking-[0.14em] text-faint">Jump to a campaign</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {campaigns.map((c) => (
-                  <Link
-                    key={c.slug}
-                    to={`/work/${c.slug}`}
-                    className="group/chip inline-flex items-center gap-1.5 rounded-full border border-lav/20 bg-surface/60 px-3.5 py-1.5 text-[13.5px] text-ink transition-colors hover:border-lav hover:bg-lav hover:text-bg"
-                  >
-                    {c.shortName}
-                    <ArrowUpRight size={13} className="transition-transform duration-300 group-hover/chip:translate-x-0.5 group-hover/chip:-translate-y-0.5" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <Link
-            to={`/work/${project.slug}`}
-            className="group/cta mt-10 inline-flex items-center gap-3 text-[15px] font-medium text-ink"
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            role="listbox"
+            aria-label="Discipline"
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: EASE }}
+            className="absolute left-0 top-full z-30 mt-2 w-full min-w-[250px] overflow-hidden rounded-2xl border border-lav/25 bg-surface p-1.5 shadow-[0_30px_70px_-30px_rgb(var(--sh)/.7)]"
           >
-            <span className="border-b border-lav/40 pb-0.5 transition-colors group-hover/cta:border-lav group-hover/cta:text-lav">
-              {campaigns.length > 0 ? "Explore all campaigns" : "View project"}
-            </span>
-            <ArrowUpRight size={17} className="transition-transform duration-300 group-hover/cta:translate-x-1 group-hover/cta:-translate-y-1" />
-          </Link>
-        </div>
-      </Reveal>
-    </article>
+            {options.map((f) => {
+              const on = f === value;
+              return (
+                <li key={f} role="option" aria-selected={on}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange(f);
+                      setOpen(false);
+                    }}
+                    className={cn(
+                      "flex w-full items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left text-[14.5px] transition-colors",
+                      on ? "bg-lav/15 font-medium text-ink" : "text-muted hover:bg-lav/10 hover:text-ink"
+                    )}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Check size={15} className={cn("text-lav", on ? "opacity-100" : "opacity-0")} />
+                      {f}
+                    </span>
+                    <span className="text-[12.5px] tabular-nums text-faint">{count(f)}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -402,11 +365,8 @@ export default function Works() {
   );
 
   const [filter, setFilter] = useState<Filter>("All");
-  const [view, setView] = useState<View>("grid");
   const list = filter === "All" ? clients : clients.filter((p) => clientDisciplines(p).includes(filter));
   const count = (f: Filter) => (f === "All" ? clients.length : clients.filter((p) => clientDisciplines(p).includes(f)).length);
-  const featured = view === "showcase" ? list.slice(0, FEATURED_COUNT) : [];
-  const rest = list.slice(featured.length);
   const totalVideos = clients.reduce((n, p) => n + clientVideoCount(p), 0);
 
   return (
@@ -468,75 +428,21 @@ export default function Works() {
           </motion.dl>
         </div>
 
-        {/* Filters */}
+        {/* Filter */}
         <div className="mt-14 flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-        <div className="flex flex-wrap gap-2.5" role="group" aria-label="Filter by discipline">
-          {(["All", ...DISCIPLINES] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              aria-pressed={filter === f}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[14px] font-medium transition-colors",
-                filter === f ? "border-lav bg-lav text-bg" : "border-lav/20 text-muted hover:border-lav/50 hover:text-ink"
-              )}
-            >
-              {f}
-              <span className={cn("text-[12px] tabular-nums", filter === f ? "text-bg/70" : "text-faint")}>{count(f)}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Only useful once there are more companies than the showcase features */}
-        {list.length > FEATURED_COUNT && (
-          <div role="group" aria-label="Layout" className="inline-flex rounded-full border border-lav/20 p-1">
-            {([["showcase", "Showcase", Rows3], ["grid", "Grid", LayoutGrid]] as const).map(([v, label, Icon]) => (
-              <button
-                key={v}
-                onClick={() => setView(v)}
-                aria-pressed={view === v}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13.5px] font-medium transition-colors",
-                  view === v ? "bg-lav text-bg" : "text-muted hover:text-ink"
-                )}
-              >
-                <Icon size={15} /> {label}
-              </button>
-            ))}
-          </div>
-        )}
+          <FilterMenu value={filter} options={["All", ...DISCIPLINES] as Filter[]} count={count} onChange={setFilter} />
+          <p className="text-[14px] text-faint" aria-live="polite">
+            Showing <span className="tabular-nums text-muted">{list.length}</span> of{" "}
+            <span className="tabular-nums text-muted">{clients.length}</span> companies
+          </p>
         </div>
 
         {/* Companies */}
-        <ul className={cn("flex flex-col gap-28 lg:gap-40", featured.length > 0 && "mt-16 lg:mt-24")}>
-          <AnimatePresence initial={false} mode="popLayout">
-            {featured.map((p, i) => (
-              <motion.li
-                key={p.slug}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: EASE }}
-              >
-                <Panel project={p} index={i} />
-              </motion.li>
-            ))}
-          </AnimatePresence>
-        </ul>
-
-        {rest.length > 0 && (
-          <section aria-label="More companies" className={featured.length > 0 ? "mt-28 lg:mt-40" : "mt-14"}>
-            {featured.length > 0 && (
-              <div className="mb-10 flex items-center gap-5">
-                <h2 className="font-display text-[clamp(1.6rem,3vw,2.4rem)]">More companies</h2>
-                <span className="h-px flex-1 bg-lav/15" />
-                <span className="text-[14px] tabular-nums text-faint">{pad(rest.length)}</span>
-              </div>
-            )}
+        {list.length > 0 && (
+          <section aria-label="Companies" className="mt-10">
             <ul className="grid gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence initial={false} mode="popLayout">
-                {rest.map((p, i) => (
+                {list.map((p, i) => (
                   <motion.li
                     key={p.slug}
                     layout
@@ -545,7 +451,7 @@ export default function Works() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5, delay: (i % 3) * 0.06, ease: EASE }}
                   >
-                    <GridCard project={p} index={featured.length + i} />
+                    <GridCard project={p} index={i} />
                   </motion.li>
                 ))}
               </AnimatePresence>

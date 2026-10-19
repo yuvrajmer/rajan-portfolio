@@ -152,3 +152,125 @@ export function StillStrip({ label, items, onOpen }: { label: string; items: Sti
     </figure>
   );
 }
+
+/** All videos visible at once in a tidy grid — no sliding. Cards share the first thumbnail's shape. */
+export function VideoGrid({ label, items, onOpen }: { label?: string; items: Video[]; onOpen: (v: Video) => void }) {
+  const ar = ratio(items[0].thumb);
+  return (
+    <figure className="mt-8">
+      <Caption>{label}</Caption>
+      <ul className={`grid gap-3 sm:gap-4 ${ar < 0.9 ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" : "grid-cols-2 lg:grid-cols-3"}`}>
+        {items.map((v) => {
+          const a = img(v.thumb);
+          return (
+            <li key={v.url}>
+              <button
+                onClick={() => onOpen(v)}
+                data-cursor="Play"
+                aria-label={`Play ${v.title}`}
+                style={{ aspectRatio: ar }}
+                className="surface-dark group relative block w-full overflow-hidden rounded-2xl border border-lav/15 bg-surface text-left"
+              >
+                <img
+                  src={a.src}
+                  alt=""
+                  width={a.width}
+                  height={a.height}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-bg/55 via-bg/0 to-bg/5 opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
+                <span className="absolute left-1/2 top-1/2 grid h-[clamp(44px,22%,60px)] aspect-square -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/40 bg-black/15 text-ink transition-all duration-500 ease-back group-hover:scale-110 group-hover:border-transparent group-hover:bg-lav group-hover:text-bg">
+                  <Play size={20} fill="currentColor" className="ml-0.5" />
+                </span>
+                <span className="absolute inset-x-0 bottom-0 translate-y-2 p-3.5 text-[13px] font-semibold opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                  {v.title}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </figure>
+  );
+}
+
+/**
+ * Feature layout: one big player on the left, the rest as a playlist on the right.
+ * Pick a row to swap the big player, click the big player to watch it full screen.
+ */
+export function VideoFeature({ label, items, onOpen }: { label?: string; items: Video[]; onOpen: (v: Video) => void }) {
+  const [active, setActive] = useState(0);
+  const cur = items[active];
+  const a = img(cur.thumb);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return (
+    <figure className="mt-8">
+      <Caption>{label}</Caption>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        {/* big player */}
+        <button
+          onClick={() => onOpen(cur)}
+          data-cursor="Play"
+          aria-label={`Play ${cur.title}`}
+          className="surface-dark group relative block aspect-video w-full overflow-hidden rounded-2xl border border-lav/20 bg-surface text-left shadow-[0_30px_70px_-40px_rgb(var(--sh)/.6)]"
+        >
+          <img
+            src={a.src}
+            alt=""
+            width={a.width}
+            height={a.height}
+            className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+          />
+          <span className="absolute inset-0 bg-gradient-to-t from-bg/85 via-bg/10 to-bg/10" />
+          <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/40 bg-black/15 text-ink transition-all duration-500 ease-back group-hover:scale-110 group-hover:border-transparent group-hover:bg-lav group-hover:text-bg">
+            <Play size={24} fill="currentColor" className="ml-0.5" />
+          </span>
+          <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-4 sm:p-5">
+            <span className="font-display text-[clamp(1.1rem,2vw,1.6rem)] leading-tight text-ink">{cur.title}</span>
+            <span className="shrink-0 font-display text-[14px] tabular-nums text-ink/70">
+              {pad(active + 1)} / {pad(items.length)}
+            </span>
+          </span>
+        </button>
+
+        {/* playlist */}
+        <div className="relative">
+          <ul className="flex flex-col gap-2 lg:absolute lg:inset-0 lg:overflow-y-auto">
+            {items.map((v, i) => {
+              const t = img(v.thumb);
+              const on = i === active;
+              return (
+                <li key={v.url} className="lg:min-h-[64px] lg:flex-1">
+                  <button
+                    onClick={() => setActive(i)}
+                    aria-pressed={on}
+                    aria-label={`Show ${v.title}`}
+                    className={`group/row flex h-full w-full items-center gap-3 rounded-xl border p-2 text-left transition-colors duration-300 ${
+                      on ? "border-lav/50 bg-lav/10" : "border-lav/15 hover:border-lav/40 hover:bg-lav/5"
+                    }`}
+                  >
+                    <span className="surface-dark relative aspect-video h-12 shrink-0 overflow-hidden rounded-lg bg-surface sm:h-14 lg:h-full lg:max-h-[72px]">
+                      <img src={t.src} alt="" loading="lazy" className="h-full w-full object-cover" />
+                      {on && (
+                        <span className="absolute inset-0 grid place-items-center bg-bg/45">
+                          <Play size={14} fill="currentColor" className="text-ink" />
+                        </span>
+                      )}
+                    </span>
+                    <span className="min-w-0">
+                      <span className={`block text-[11.5px] tabular-nums ${on ? "text-ember" : "text-faint"}`}>{pad(i + 1)}</span>
+                      <span className={`block truncate text-[14px] font-medium ${on ? "text-ink" : "text-muted group-hover/row:text-ink"}`}>
+                        {v.title}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </figure>
+  );
+}

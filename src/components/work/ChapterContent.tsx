@@ -2,7 +2,7 @@ import { chapterVideos, type Chapter, type Section, type Still, type Video } fro
 import { slugify } from "../../lib/hooks";
 import { Chip } from "../ui/Chip";
 import { LogoMorph } from "./LogoMorph";
-import { StillStrip, VideoStrip } from "./MediaStrips";
+import { StillStrip, VideoFeature, VideoGrid, VideoStrip } from "./MediaStrips";
 
 export const sectionId = (chapter: Chapter, s: Section) => `${chapter.id}-${slugify(s.title)}`;
 
@@ -53,7 +53,11 @@ function SectionBlock({
 
       {section.media?.map((m, i) => {
         if (m.kind === "logo-morph") return <LogoMorph key={i} />;
-        if (m.kind === "videos") return <VideoStrip key={i} label={m.label} items={m.items} onOpen={onVideo} />;
+        if (m.kind === "videos") {
+          if (m.layout === "feature") return <VideoFeature key={i} label={m.label} items={m.items} onOpen={onVideo} />;
+          if (m.layout === "grid") return <VideoGrid key={i} label={m.label} items={m.items} onOpen={onVideo} />;
+          return <VideoStrip key={i} label={m.label} items={m.items} onOpen={onVideo} />;
+        }
         return <StillStrip key={i} label={m.label} items={m.items} onOpen={(idx) => onStills(m.items, idx)} />;
       })}
 

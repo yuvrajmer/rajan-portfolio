@@ -7,7 +7,8 @@ export type Video = { url: string; title: string; thumb: ImageKey; src?: string 
 export type Still = { key: ImageKey; alt: string };
 
 export type MediaGroup =
-  | { kind: "videos"; label?: string; items: Video[] }
+  /** layout: "slider" (default sideways strip) · "feature" (big player + playlist) · "grid" (all visible, no sliding) */
+  | { kind: "videos"; label?: string; items: Video[]; layout?: "slider" | "feature" | "grid" }
   | { kind: "stills"; label: string; items: Still[] }
   | { kind: "logo-morph" };
 
@@ -645,6 +646,231 @@ export const projects: Project[] = [
     ],
   },
 
+  /* ============================== NOTHING ========================= */
+  // Built from Nothing_2.zip (CGI + social media reels).
+  {
+    slug: "nothing",
+    name: "Nothing",
+    shortName: "Nothing",
+    logo: "logo/nothing",
+    subtitle: "CGI promotional videos and social media reels for Nothing.",
+    disciplines: ["3D & CGI", "VFX & tracking", "Motion graphics", "Social campaigns"],
+    cover: { key: "nothing/cgi-cmf-phone", position: "50% 40%" },
+    intro: [
+      "Nothing is a consumer technology brand known for its minimalist, dot-matrix visual identity. I contributed CGI promotional videos that blend 3D elements with live-action footage, alongside short-form social reels and giveaway posts that stay true to the brand\u2019s look.",
+    ],
+    tags: ["CGI", "VFX", "Social Campaign"],
+    chapters: [
+      {
+        id: "cgi",
+        tab: "CGI",
+        title: "Nothing \u2013 CGI Video Projects",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "Contributed to multiple CGI promotional videos for Nothing, combining 3D elements with live-action footage to create visually engaging marketing content, with guidance from a senior artist to reach the final product.",
+            ],
+          },
+          {
+            title: "3D Integration & VFX",
+            body: [
+              "Worked on model placement, camera tracking, lighting, animation, and compositing to ensure seamless integration of CGI elements with live-action footage.",
+            ],
+          },
+          {
+            title: "Project Showcase",
+            list: [
+              "CMF Phone \u2013 phones and accessories floating over the city skyline",
+              "Phone (2a) VFX",
+              "Phone (3a) VFX",
+              "Phone (3) VFX",
+            ],
+            media: [
+              {
+                kind: "videos",
+                label: "CGI Showcase",
+                items: [
+                  v("https://youtube.com/shorts/S39NRDgcGgA", "Nothing CMF Phone VFX", "nothing/cgi-cmf-phone"),
+                  v("https://youtube.com/shorts/PqLEZxjGJ4k", "Nothing Phone (2a) VFX", "nothing/cgi-2a"),
+                  v("https://youtube.com/shorts/27V9SbmIwf8", "Nothing Phone (3a) VFX", "nothing/cgi-3a"),
+                  v("https://youtube.com/shorts/6FvCZtfR-4U", "Nothing Phone (3) VFX", "nothing/cgi-phone3"),
+                ],
+              },
+              {
+                kind: "stills",
+                label: "3D models & original footage",
+                items: [
+                  { key: "nothing/bts-cmf-footage", alt: "CMF Phone VFX \u2013 original footage" },
+                  { key: "nothing/bts-cmf-model-1", alt: "CMF Phone VFX \u2013 3D models placed in the scene, view 1" },
+                  { key: "nothing/bts-cmf-model-2", alt: "CMF Phone VFX \u2013 3D models placed in the scene, view 2" },
+                  { key: "nothing/bts-cmf-model-3", alt: "CMF Phone VFX \u2013 3D models placed in the scene, view 3" },
+                  { key: "nothing/bts-3a-model-1", alt: "Phone (3a) VFX \u2013 3D models placed in the scene, view 1" },
+                  { key: "nothing/bts-3a-model-2", alt: "Phone (3a) VFX \u2013 3D models placed in the scene, view 2" },
+                  { key: "nothing/bts-3a-model-3", alt: "Phone (3a) VFX \u2013 3D models placed in the scene, view 3" },
+                  { key: "nothing/bts-phone3-footage", alt: "Phone (3) VFX \u2013 original footage" },
+                ],
+              },
+            ],
+          },
+          {
+            title: "Role & Contribution",
+            body: ["Responsible for CGI animation, camera tracking, motion graphics, compositing, and final video production."],
+          },
+          { title: "Tools Used", tools: ["Blender", AE, PS] },
+        ],
+      },
+      {
+        id: "sm",
+        tab: "Social",
+        title: "Nothing \u2013 Social Media Reels",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "Contributed to the Nothing social media campaign by creating engaging promotional content aligned with the brand\u2019s minimalist visual identity.",
+            ],
+          },
+          {
+            title: "Giveaway Posts",
+            body: [
+              "Designed eye-catching giveaway posts to drive audience engagement and participation while keeping the brand aesthetic consistent across social platforms.",
+            ],
+          },
+          {
+            title: "Social Media Reels",
+            body: [
+              "Produced short-form promotional reels featuring motion graphics, animated typography, and product-focused visuals optimised for social media engagement.",
+            ],
+            media: [
+              {
+                kind: "videos",
+                label: "Social Media Reels",
+                layout: "grid",
+                items: [
+                  v("https://youtube.com/shorts/HGTmDRtcJOE", "CMF Phone 2 Giveaway", "nothing/sm-cmf-giveaway"),
+                  v("https://youtube.com/shorts/jviwKtAQH_4", "Nothing Eid", "nothing/sm-eid"),
+                  v("https://youtube.com/shorts/skad_xxLN0Q", "Nothing 100 Drops", "nothing/sm-100-drops"),
+                  v("https://youtube.com/shorts/AXU7uQuPw30", "Nothing Giveaway \u2013 Week 01", "nothing/sm-giveaway-week-01"),
+                  v("https://youtube.com/shorts/gvLAOc41iAc", "Nothing Giveaway \u2013 Week 02", "nothing/sm-giveaway-week-02"),
+                ],
+              },
+            ],
+          },
+          {
+            title: "Role & Contribution",
+            body: ["Responsible for motion graphics, some 3D graphics, and preparing campaign assets for digital platforms."],
+          },
+          { title: "Tools Used", tools: [AE, "Blender", PS] },
+        ],
+      },
+    ],
+  },
+
+  /* ============================== AL GHANDI ======================= */
+  // Built from Al_Ghandi.zip (CGI promotional offers + social media reels and KV animations).
+  {
+    slug: "al-ghandi",
+    name: "Al Ghandi Auto",
+    shortName: "Al Ghandi",
+    logo: "logo/al-ghandi",
+    subtitle: "CGI offer videos, social reels and key visual animations for Al Ghandi Auto.",
+    disciplines: ["3D & CGI", "Motion graphics", "Social campaigns"],
+    cover: { key: "alghandi/sm-hummer-background", position: "50% 55%" },
+    intro: [
+      "Al Ghandi Auto is an automotive dealer group in the UAE representing brands such as Chevrolet and GMC. I created CGI promotional videos for showroom offers, plus beat-driven social reels and animated key visuals for its digital campaigns.",
+    ],
+    tags: ["CGI", "Motion Design", "Social Campaign"],
+    chapters: [
+      {
+        id: "cgi",
+        tab: "CGI",
+        title: "CGI Animation \u2013 Promotional Offers",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "Created a series of CGI promotional videos for marketing campaigns, combining creative storytelling with 3D animation to highlight brand offers and drive audience engagement.",
+            ],
+          },
+          {
+            title: "CGI Animation",
+            body: [
+              "Produced high-quality 3D animations featuring cinematic camera movements, motion graphics, and seamless visual effects to create engaging promotional content.",
+            ],
+            media: [
+              {
+                kind: "videos",
+                label: "CGI Showcase",
+                items: [
+                  v("https://youtube.com/shorts/KGuqvUsPN4k", "Chevrolet Offer 2024 Reel", "alghandi/cgi-chevrolet-offer"),
+                  v("https://youtube.com/shorts/GVWo_ujJsdo", "GMC Offer 2024 VFX", "alghandi/cgi-gmc-offer"),
+                  v("https://youtube.com/shorts/QeiRlDQtqRw", "Instagram Heart Animation", "alghandi/cgi-heart-anim"),
+                  v("https://youtube.com/shorts/hli_rnNZPe4", "International Family Day \u2013 Ball Animation", "alghandi/cgi-family-day"),
+                  v("https://youtube.com/shorts/ZI8DQuYDaMs", "Tamam Used Cars VFX", "alghandi/cgi-tamam-used-cars"),
+                ],
+              },
+            ],
+          },
+          {
+            title: "Role & Contribution",
+            body: ["Responsible for concept development, CGI animation, motion design, scene composition, and final video production."],
+          },
+          { title: "Tools Used", tools: ["Blender", "3ds Max", AE, PS] },
+        ],
+      },
+      {
+        id: "sm",
+        tab: "Social",
+        title: "Al Ghandi \u2013 Social Media & KV Animation",
+        sections: [
+          {
+            title: "Project Overview",
+            body: [
+              "Created a diverse range of social media reels and key visual (KV) animations, combining music-beat-driven edits, 2D motion typography, and AI-assisted video elements to create engaging and visually dynamic content. The focus was on rhythm, smooth transitions, creative storytelling, and motion graphics for digital campaigns.",
+            ],
+          },
+          {
+            title: "Social Media Reels",
+            media: [
+              {
+                kind: "videos",
+                label: "Social Media Reels",
+                layout: "grid",
+                items: [
+                  v("https://youtube.com/shorts/eztoKq3vWGs", "Abarth B-Roll", "alghandi/sm-abarth-broll"),
+                  v("https://youtube.com/shorts/Xb6EehdQ_Vk", "Canyon Drift", "alghandi/sm-canyon-drift"),
+                  v("https://youtube.com/shorts/Bs9r3HBlnBU", "Hummer Background Change", "alghandi/sm-hummer-background"),
+                  v("https://youtube.com/shorts/EgP6d972xOE", "Chevy Halloween", "alghandi/sm-chevy-halloween"),
+                ],
+              },
+            ],
+          },
+          {
+            title: "KV Animations",
+            body: ["Animated key visuals for the National Day campaign, built in landscape format."],
+            media: [
+              {
+                kind: "videos",
+                label: "KV Animations",
+                layout: "grid",
+                items: [
+                  v("https://youtu.be/Y7Q81fJGP5Y", "Chevy KV \u2013 National Day", "alghandi/kv-chevy-national-day"),
+                  v("https://youtu.be/Z64cayj3Nlg", "GMC KV \u2013 National Day", "alghandi/kv-gmc-national-day"),
+                ],
+              },
+            ],
+          },
+          {
+            title: "Role & Contribution",
+            body: ["Worked as a Motion Artist, creating engaging social media reels and key visual (KV) animations for digital campaigns."],
+          },
+          { title: "Tools Used", tools: [AE, "Freepik AI", PS] },
+        ],
+      },
+    ],
+  },
+
   /* =========================== VISIT SHARJAH ====================== */
   {
     slug: "visit-sharjah",
@@ -887,6 +1113,7 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Hero Videos",
+                layout: "feature",
                 items: [
                   v("https://youtu.be/_XAOG2Snt0w", "Flavour – Aura Series", "ceramic/hero-flavour-aura"),
                   v("https://youtu.be/5PocSWqFqKY", "Lemzon – Tecnost", "ceramic/hero-lemzon-tecnost"),
@@ -917,6 +1144,7 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Social Media Assets",
+                layout: "grid",
                 items: [
                   v("https://youtube.com/shorts/sk0uNryPKWo", "Cruso – Quartz", "ceramic/sm-cruso-quartz"),
                   v("https://youtube.com/shorts/123eFEweRK0", "Evolution", "ceramic/sm-evolution"),
@@ -927,10 +1155,12 @@ export const projects: Project[] = [
                 ],
               },
               {
-                // ⚠ No video link was supplied for this one, so it opens as an image.
-                kind: "stills",
+                kind: "videos",
                 label: "Flavour Post",
-                items: [{ key: "ceramic/sm-flavour-post", alt: "Flavour post" }],
+                layout: "grid",
+                items: [
+                  v("https://youtube.com/shorts/M8S8PS_WoDU", "Flavour – Post", "ceramic/sm-flavour-post"),
+                ],
               },
             ],
           },
@@ -999,27 +1229,6 @@ export const projects: Project[] = [
         ],
       },
       {
-        id: "other",
-        tab: "Other Work",
-        title: "Project 02 – Other Work",
-        sections: [
-          {
-            title: "Modelling, Rigging & Animation",
-            body: ["Some glimpses of my 3D modelling, rigging and animation assignments."],
-            media: [
-              {
-                kind: "stills",
-                label: "Assignment pages",
-                items: [
-                  { key: "maya/spread-06", alt: "Other work – castle, ship and building models" },
-                  { key: "maya/spread-07", alt: "Other work – characters, rigs and animation" },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
         id: "sketching",
         tab: "Sketching",
         title: "Project 05 – Sketching",
@@ -1030,10 +1239,22 @@ export const projects: Project[] = [
             media: [
               {
                 kind: "stills",
-                label: "Sketching pages",
+                label: "Sketches",
                 items: [
-                  { key: "maya/spread-10", alt: "Sketching – animals, anatomy and character studies" },
-                  { key: "maya/spread-11", alt: "Sketching – portrait studies" },
+                  { key: "maya/sketch-01", alt: "Sketch – Tyrion portrait, pencil" },
+                  { key: "maya/sketch-02", alt: "Sketch – bearded man with sunglasses, colour pencil" },
+                  { key: "maya/sketch-03", alt: "Sketch – Superman and Batman, colour pencil" },
+                  { key: "maya/sketch-04", alt: "Sketch – Rajni with dog, colour pencil" },
+                  { key: "maya/sketch-05", alt: "Sketch – bull, colour pencil" },
+                  { key: "maya/sketch-06", alt: "Sketch – The Wolverine, water colour" },
+                  { key: "maya/sketch-07", alt: "Sketch – camel and figures, pencil study" },
+                  { key: "maya/sketch-08", alt: "Sketch – tiger, pen and colour" },
+                  { key: "maya/sketch-09", alt: "Sketch – coconut palm by the water, colour" },
+                  { key: "maya/sketch-10", alt: "Sketch – cattle on a hillside farm, colour" },
+                  { key: "maya/sketch-11", alt: "Sketch – running cheetah, colour" },
+                  { key: "maya/sketch-12", alt: "Sketch – bearded portrait, pencil" },
+                  { key: "maya/sketch-13", alt: "Sketch – flaming-head character holding the Earth, colour" },
+                  { key: "maya/sketch-14", alt: "Sketch – portrait with sunglasses, pencil" },
                 ],
               },
             ],
@@ -1047,6 +1268,8 @@ export const projects: Project[] = [
         sections: [
           {
             title: "Showreel",
+            // ⚠ PLACEHOLDER description — replace with your own wording.
+            body: ["A short reel of my 3D modelling, rigging and animation work in Autodesk Maya and 3ds Max — characters, environments and the story film The Farmer and Farm."],
             media: [
               {
                 kind: "videos",
@@ -1099,7 +1322,7 @@ export const siblingsOf = (slug: string): Project[] => {
  * add its project above, then put its slug here. (Campaigns delivered under a
  * company, like F1H2O under Visit Sharjah, stay out of this list.)
  */
-export const CLIENT_SLUGS = ["visit-sharjah", "continental", "ceramic-posts", "maya-max-assignments"] as const;
+export const CLIENT_SLUGS = ["visit-sharjah", "continental", "nothing", "al-ghandi", "ceramic-posts", "maya-max-assignments"] as const;
 export const clients: Project[] = CLIENT_SLUGS.map(getProject).filter((p): p is Project => Boolean(p));
 
 /** How many companies the home page "Selected work" section shows. */
