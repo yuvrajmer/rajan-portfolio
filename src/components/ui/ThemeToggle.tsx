@@ -12,7 +12,7 @@ export function ThemeToggle() {
       type="button"
       role="switch"
       aria-checked={light}
-      aria-label={light ? "Light theme on — switch to dark" : "Dark theme on — switch to light"}
+      aria-label="Light theme"
       onClick={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
         toggle({ x: r.left + r.width / 2, y: r.top + r.height / 2 });

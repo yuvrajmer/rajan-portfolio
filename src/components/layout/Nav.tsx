@@ -49,7 +49,7 @@ const links = [
 ];
 
 export function Nav() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const isHome = pathname === "/";
   const [menu, setMenu] = useState(false);
   const [spy, setSpy] = useState("");
@@ -59,7 +59,30 @@ export function Nav() {
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
 
-  useEffect(() => setMenu(false), [pathname]);
+  // close the mobile menu on any navigation (including in-page #links on the home page)
+  useEffect(() => setMenu(false), [pathname, hash]);
+
+  // mobile menu: Esc closes it (focus returns to the button), and so does tapping outside
+  const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenu(false);
+        toggleRef.current?.focus();
+      }
+    };
+    const onDown = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) setMenu(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [menu]);
 
   // scroll-spy for the in-page links on the home page
   useEffect(() => {
@@ -79,7 +102,7 @@ export function Nav() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[65] pt-3 sm:pt-4">
+      <header ref={headerRef} className="fixed inset-x-0 top-0 z-[65] pt-3 sm:pt-4">
         <div className="container-page">
           <nav
             aria-label="Primary"
@@ -102,6 +125,7 @@ export function Nav() {
                 <Link
                   key={l.label}
                   to={l.to}
+                  aria-current={active ? (l.match ? "page" : "location") : undefined}
                   className={cn(
                     "relative rounded-full px-4 py-2 text-[14px] font-medium transition-colors",
                     active ? "text-ink" : "text-muted hover:text-ink"
@@ -136,8 +160,10 @@ export function Nav() {
           <ThemeToggle />
 
           <button
+            ref={toggleRef}
             onClick={() => setMenu((m) => !m)}
             aria-expanded={menu}
+            aria-controls="mobile-menu"
             aria-label={menu ? "Close menu" : "Open menu"}
             className="grid h-9 w-9 place-items-center rounded-full text-ink transition-colors hover:bg-lav/10 md:hidden"
           >
@@ -149,6 +175,7 @@ export function Nav() {
         <AnimatePresence>
           {menu && (
             <motion.div
+              id="mobile-menu"
               initial={{ opacity: 0, y: -8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
@@ -156,7 +183,7 @@ export function Nav() {
               className="glass absolute inset-x-3 top-[68px] rounded-3xl p-3 md:hidden"
             >
               {[{ label: "Home", to: "/" }, ...links].map((l) => (
-                <Link key={l.label} to={l.to} className="block rounded-2xl px-4 py-3.5 font-display text-xl hover:bg-lav/10">
+                <Link key={l.label} to={l.to} onClick={() => setMenu(false)} className="block rounded-2xl px-4 py-3.5 font-display text-xl hover:bg-lav/10">
                   {l.label}
                 </Link>
               ))}

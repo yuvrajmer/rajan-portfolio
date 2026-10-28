@@ -15,7 +15,9 @@ export function ScrollToTop() {
   return (
     <button
       type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() =>
+        window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })
+      }
       aria-label="Back to top"
       className="group fixed bottom-5 right-5 z-[60] grid place-items-center rounded-full bg-surface/80 text-ink backdrop-blur transition-colors hover:bg-surface2 sm:bottom-7 sm:right-7"
       style={{ width: SIZE, height: SIZE }}

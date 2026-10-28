@@ -23,12 +23,12 @@ export function BrandMarquee() {
                   alt=""
                   width={a.width}
                   height={a.height}
-                  className="h-9 w-auto max-w-none brightness-0 invert light:invert-0"
+                  className="h-10 w-[150px] max-w-none object-contain brightness-0 invert light:invert-0"
                   draggable={false}
                 />
               ) : (
                 // PLACEHOLDER: no logo file for this company yet — its name is shown as text instead.
-                <span className="block whitespace-nowrap font-display text-[22px] leading-9 text-ink">{p.shortName}</span>
+                <span className="flex h-10 w-[150px] items-center justify-center whitespace-nowrap font-display text-[22px] text-ink">{p.shortName}</span>
               )}
             </Link>
           </li>

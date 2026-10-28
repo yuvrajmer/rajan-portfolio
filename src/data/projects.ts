@@ -3,12 +3,12 @@ import type { ImageKey } from "../assets";
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
-export type Video = { url: string; title: string; thumb: ImageKey; src?: string };
+export type Video = { url: string; title: string; thumb: ImageKey; src?: string; /** short description shown under the video in the "cards" layout */ desc?: string };
 export type Still = { key: ImageKey; alt: string };
 
 export type MediaGroup =
-  /** layout: "slider" (default sideways strip) · "feature" (big player + playlist) · "grid" (all visible, no sliding) */
-  | { kind: "videos"; label?: string; items: Video[]; layout?: "slider" | "feature" | "grid" }
+  /** layout: "slider" (default sideways strip) · "feature" (big player + playlist) · "grid" (all visible, no sliding) · "cards" (video cards with title + description underneath) · "column" (videos stacked one under another) · "cardgrid" (video cards, 2 per row, no sliding) */
+  | { kind: "videos"; label?: string; items: Video[]; /** "cardgrid" only: videos per row on desktop (default 2) */ cols?: 2 | 3; layout?: "slider" | "feature" | "grid" | "cards" | "carousel" | "column" | "cardgrid" }
   | { kind: "stills"; label: string; items: Still[] }
   | { kind: "logo-morph" };
 
@@ -44,7 +44,10 @@ export type Project = {
   subtitle: string;
   years?: string;
   disciplines: Discipline[];
-  cover: { key: ImageKey; position?: string };
+  /** fit "contain" shows the whole frame (letter-boxed over a blurred copy) instead of cropping it to fill the card */
+  cover: { key: ImageKey; position?: string; fit?: "cover" | "contain" };
+  /** true when the cover image already carries the title, so the card does not repeat the name over it */
+  coverHasTitle?: boolean;
   intro?: string[];
   tags?: string[];
   chapters: Chapter[];
@@ -62,6 +65,8 @@ export const DISCIPLINES: Discipline[] = [
 /* ------------------------------------------------------------------ */
 /** Pass a 4th arg (a direct mp4/webm URL) to play a self-hosted file instead of the YouTube embed. */
 const v = (url: string, title: string, thumb: ImageKey, src?: string): Video => ({ url, title, thumb, src });
+/** Same as v(), plus a description that shows under the video in the "cards" layout. */
+const vd = (url: string, title: string, thumb: ImageKey, desc: string): Video => ({ url, title, thumb, desc });
 const AE = "Adobe After Effects";
 const PS = "Adobe Photoshop";
 const AI = "Adobe Illustrator";
@@ -597,23 +602,17 @@ export const projects: Project[] = [
           },
           {
             title: "Project Showcase",
-            list: [
-              "Balls Falling \u2013 volleyball event promotion",
-              "Grass Grow \u2013 concept of the brand using green electricity",
-              "Tyre in Different Locations \u2013 concept of the brand's reach across the Middle East",
-              "Carpet Animation \u2013 giving the brand a royal touch",
-              "Truck with Big Size Elements \u2013 engineered for safety and performance",
-            ],
             media: [
               {
                 kind: "videos",
                 label: "CGI Showcase",
+                layout: "cards",
                 items: [
-                  v("https://youtube.com/shorts/H1hCt-5ovQY", "Balls Falling CGI", "continental/cgi-balls-falling"),
-                  v("https://youtube.com/shorts/kEcqZBEAj38", "Grass Grow CGI", "continental/cgi-grass-grow"),
-                  v("https://youtube.com/shorts/tyeIhjvdxPo", "Tyre in Different Locations", "continental/cgi-tyre-locations"),
-                  v("https://youtube.com/shorts/iwjVJVteLkM", "Carpet Animation", "continental/cgi-carpet"),
-                  v("https://youtube.com/shorts/pFi-e18d_xA", "Truck with Big Size Elements", "continental/cgi-truck"),
+                  vd("https://youtube.com/shorts/H1hCt-5ovQY", "Balls Falling CGI", "continental/cgi-balls-falling", "Volleyball event promotion."),
+                  vd("https://youtube.com/shorts/kEcqZBEAj38", "Grass Grow CGI", "continental/cgi-grass-grow", "Concept of the brand using green electricity."),
+                  vd("https://youtube.com/shorts/tyeIhjvdxPo", "Tyre in Different Locations", "continental/cgi-tyre-locations", "Concept of the brand\u2019s reach across the Middle East."),
+                  vd("https://youtube.com/shorts/iwjVJVteLkM", "Carpet Animation", "continental/cgi-carpet", "Giving the brand a royal touch."),
+                  vd("https://youtube.com/shorts/pFi-e18d_xA", "Truck with Big Size Elements", "continental/cgi-truck", "Engineered for safety and performance."),
                 ],
               },
             ],
@@ -637,7 +636,8 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Social Media",
-                items: [v("https://youtube.com/shorts/mNXWpDdDsQM", "2024 Events Reel", "continental/sm-2024-events")],
+                layout: "cards",
+                items: [vd("https://youtube.com/shorts/mNXWpDdDsQM", "2024 Events Reel", "continental/sm-2024-events", "Concept and animation promoting Continental\u2019s 2024 event presence.")],
               },
             ],
           },
@@ -653,11 +653,13 @@ export const projects: Project[] = [
     name: "Nothing",
     shortName: "Nothing",
     logo: "logo/nothing",
-    subtitle: "CGI promotional videos and social media reels for Nothing.",
+    subtitle: "CGI product films and social reels for Nothing, built around the brand\u2019s minimalist dot-matrix identity.",
+    years: "2025",
     disciplines: ["3D & CGI", "VFX & tracking", "Motion graphics", "Social campaigns"],
     cover: { key: "nothing/cgi-cmf-phone", position: "50% 40%" },
     intro: [
-      "Nothing is a consumer technology brand known for its minimalist, dot-matrix visual identity. I contributed CGI promotional videos that blend 3D elements with live-action footage, alongside short-form social reels and giveaway posts that stay true to the brand\u2019s look.",
+      "Nothing is a London-based consumer technology brand known for transparent hardware and a minimalist, dot-matrix visual identity.",
+      "I worked on CGI product films that place 3D phones and accessories into real city footage, and on social reels and giveaway posts that carry the same clean, playful look across platforms.",
     ],
     tags: ["CGI", "VFX", "Social Campaign"],
     chapters: [
@@ -670,6 +672,7 @@ export const projects: Project[] = [
             title: "Project Overview",
             body: [
               "Contributed to multiple CGI promotional videos for Nothing, combining 3D elements with live-action footage to create visually engaging marketing content, with guidance from a senior artist to reach the final product.",
+              "The goal in every shot was the same: make the 3D products feel like they were really there, not placed on top of the footage.",
             ],
           },
           {
@@ -677,14 +680,20 @@ export const projects: Project[] = [
             body: [
               "Worked on model placement, camera tracking, lighting, animation, and compositing to ensure seamless integration of CGI elements with live-action footage.",
             ],
+            list: [
+              "Camera tracking \u2013 matching a 3D camera to the original clip so every element stays locked to the scene",
+              "Model placement & lighting \u2013 positioning the products and matching light and colour to the sky and surroundings",
+              "Animation \u2013 giving phones and accessories natural, eye-catching movement",
+              "Compositing & finish \u2013 blending, colour grading and motion graphics for the final cut",
+            ],
           },
           {
             title: "Project Showcase",
             list: [
-              "CMF Phone \u2013 phones and accessories floating over the city skyline",
-              "Phone (2a) VFX",
-              "Phone (3a) VFX",
-              "Phone (3) VFX",
+              "CMF Phone \u2013 phones and accessories floating above a city skyline",
+              "Phone (2a) \u2013 a CGI product moment set against a night-time city shot",
+              "Phone (3a) \u2013 3D phone and hand elements integrated into a city building shot",
+              "Phone (3) \u2013 CGI screen content appearing across a pair of city towers",
             ],
             media: [
               {
@@ -697,25 +706,41 @@ export const projects: Project[] = [
                   v("https://youtube.com/shorts/6FvCZtfR-4U", "Nothing Phone (3) VFX", "nothing/cgi-phone3"),
                 ],
               },
+            ],
+          },
+          {
+            title: "Behind the Scenes",
+            body: [
+              "A look at how the shots are built: the original footage first, then the 3D models placed into the scene before lighting and compositing.",
+            ],
+            media: [
               {
                 kind: "stills",
-                label: "3D models & original footage",
+                label: "Original footage",
                 items: [
                   { key: "nothing/bts-cmf-footage", alt: "CMF Phone VFX \u2013 original footage" },
+                  { key: "nothing/bts-phone3-footage", alt: "Phone (3) VFX \u2013 original footage" },
+                ],
+              },
+              {
+                kind: "stills",
+                label: "3D models in the scene",
+                items: [
                   { key: "nothing/bts-cmf-model-1", alt: "CMF Phone VFX \u2013 3D models placed in the scene, view 1" },
                   { key: "nothing/bts-cmf-model-2", alt: "CMF Phone VFX \u2013 3D models placed in the scene, view 2" },
                   { key: "nothing/bts-cmf-model-3", alt: "CMF Phone VFX \u2013 3D models placed in the scene, view 3" },
                   { key: "nothing/bts-3a-model-1", alt: "Phone (3a) VFX \u2013 3D models placed in the scene, view 1" },
                   { key: "nothing/bts-3a-model-2", alt: "Phone (3a) VFX \u2013 3D models placed in the scene, view 2" },
                   { key: "nothing/bts-3a-model-3", alt: "Phone (3a) VFX \u2013 3D models placed in the scene, view 3" },
-                  { key: "nothing/bts-phone3-footage", alt: "Phone (3) VFX \u2013 original footage" },
                 ],
               },
             ],
           },
           {
             title: "Role & Contribution",
-            body: ["Responsible for CGI animation, camera tracking, motion graphics, compositing, and final video production."],
+            body: [
+              "Responsible for CGI animation, camera tracking, motion graphics, compositing, and final video production, working alongside a senior artist on look and polish.",
+            ],
           },
           { title: "Tools Used", tools: ["Blender", AE, PS] },
         ],
@@ -729,18 +754,26 @@ export const projects: Project[] = [
             title: "Project Overview",
             body: [
               "Contributed to the Nothing social media campaign by creating engaging promotional content aligned with the brand\u2019s minimalist visual identity.",
+              "The work ranges from product-led reels to weekly giveaway posts, all built to stop the scroll while staying recognisably Nothing.",
             ],
           },
           {
-            title: "Giveaway Posts",
+            title: "Design Approach",
             body: [
-              "Designed eye-catching giveaway posts to drive audience engagement and participation while keeping the brand aesthetic consistent across social platforms.",
+              "Dot-matrix typography, restrained colour and product-first compositions keep every piece on brand, while animated type and clean motion give each reel its energy.",
             ],
           },
           {
             title: "Social Media Reels",
             body: [
-              "Produced short-form promotional reels featuring motion graphics, animated typography, and product-focused visuals optimised for social media engagement.",
+              "Produced short-form promotional reels and giveaway posts featuring motion graphics, animated typography, and product-focused visuals, optimised for social media engagement.",
+            ],
+            list: [
+              "CMF Phone 2 Giveaway \u2013 a product-focused giveaway announcement",
+              "Eid \u2013 a festive Nothing Phone moment set against a starry night sky",
+              "100 Drops \u2013 \u201cJust for 100 of you\u201d, a limited-drop concept with Phone (3) and Headphone (1) parachuting in",
+              "Giveaway Week 01 \u2013 the first of the weekly giveaway posts, with the phone staged in a clean 3D set",
+              "Giveaway Week 02 \u2013 a dot-matrix \u201cmovie titles\u201d theme for the second weekly giveaway",
             ],
             media: [
               {
@@ -774,11 +807,13 @@ export const projects: Project[] = [
     name: "Al Ghandi Auto",
     shortName: "Al Ghandi",
     logo: "logo/al-ghandi",
-    subtitle: "CGI offer videos, social reels and key visual animations for Al Ghandi Auto.",
+    subtitle: "CGI offer videos, social reels and animated key visuals for Al Ghandi Auto.",
+    years: "2024",
     disciplines: ["3D & CGI", "Motion graphics", "Social campaigns"],
     cover: { key: "alghandi/sm-hummer-background", position: "50% 55%" },
     intro: [
-      "Al Ghandi Auto is an automotive dealer group in the UAE representing brands such as Chevrolet and GMC. I created CGI promotional videos for showroom offers, plus beat-driven social reels and animated key visuals for its digital campaigns.",
+      "Al Ghandi Auto is an automotive dealer group in the UAE whose showrooms and brands include Chevrolet, GMC, Abarth and Tamam Used Cars.",
+      "I created CGI offer videos that bring animated 3D graphics into real showroom footage, along with beat-driven social reels and animated key visuals for its digital campaigns.",
     ],
     tags: ["CGI", "Motion Design", "Social Campaign"],
     chapters: [
@@ -791,6 +826,7 @@ export const projects: Project[] = [
             title: "Project Overview",
             body: [
               "Created a series of CGI promotional videos for marketing campaigns, combining creative storytelling with 3D animation to highlight brand offers and drive audience engagement.",
+              "Each video starts from real showroom footage, so the offer graphics sit naturally in the space and the cars stay the hero.",
             ],
           },
           {
@@ -802,12 +838,13 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "CGI Showcase",
+                layout: "cards",
                 items: [
-                  v("https://youtube.com/shorts/KGuqvUsPN4k", "Chevrolet Offer 2024 Reel", "alghandi/cgi-chevrolet-offer"),
-                  v("https://youtube.com/shorts/GVWo_ujJsdo", "GMC Offer 2024 VFX", "alghandi/cgi-gmc-offer"),
-                  v("https://youtube.com/shorts/QeiRlDQtqRw", "Instagram Heart Animation", "alghandi/cgi-heart-anim"),
-                  v("https://youtube.com/shorts/hli_rnNZPe4", "International Family Day \u2013 Ball Animation", "alghandi/cgi-family-day"),
-                  v("https://youtube.com/shorts/ZI8DQuYDaMs", "Tamam Used Cars VFX", "alghandi/cgi-tamam-used-cars"),
+                  vd("https://youtube.com/shorts/KGuqvUsPN4k", "Chevrolet Offer 2024 Reel", "alghandi/cgi-chevrolet-offer", "Floating 3D offer badges with monthly prices over the showroom floor."),
+                  vd("https://youtube.com/shorts/GVWo_ujJsdo", "GMC Offer 2024 VFX", "alghandi/cgi-gmc-offer", "Animated offer graphics integrated into a GMC showroom shot."),
+                  vd("https://youtube.com/shorts/QeiRlDQtqRw", "Instagram Heart Animation", "alghandi/cgi-heart-anim", "A pointing-hand showroom shot with an Instagram-style heart as a call to action."),
+                  vd("https://youtube.com/shorts/hli_rnNZPe4", "International Family Day \u2013 Ball Animation", "alghandi/cgi-family-day", "An animated 3D ball moving through the showroom for a Family Day greeting."),
+                  vd("https://youtube.com/shorts/ZI8DQuYDaMs", "Tamam Used Cars VFX", "alghandi/cgi-tamam-used-cars", "Animated tick and cross markers over used cars to highlight the offer."),
                 ],
               },
             ],
@@ -827,33 +864,46 @@ export const projects: Project[] = [
           {
             title: "Project Overview",
             body: [
-              "Created a diverse range of social media reels and key visual (KV) animations, combining music-beat-driven edits, 2D motion typography, and AI-assisted video elements to create engaging and visually dynamic content. The focus was on rhythm, smooth transitions, creative storytelling, and motion graphics for digital campaigns.",
+              "Created a diverse range of social media reels and key visual (KV) animations, combining music-beat-driven edits, 2D motion typography, and AI-assisted video elements to create engaging and visually dynamic content.",
+              "The focus was on rhythm, smooth transitions, creative storytelling, and motion graphics for digital campaigns.",
+            ],
+          },
+          {
+            title: "Creative Approach",
+            list: [
+              "Music-beat-driven edits that cut and transition on the rhythm",
+              "2D motion typography for clear, punchy messaging",
+              "AI-assisted video elements to build scenes and backgrounds quickly",
+              "Seasonal and national-day key visuals animated for digital platforms",
             ],
           },
           {
             title: "Social Media Reels",
+            body: ["Vertical reels that turn vehicle footage and stills into short, rhythm-led stories for social platforms."],
             media: [
               {
                 kind: "videos",
                 label: "Social Media Reels",
-                layout: "grid",
+                layout: "cards",
                 items: [
-                  v("https://youtube.com/shorts/eztoKq3vWGs", "Abarth B-Roll", "alghandi/sm-abarth-broll"),
-                  v("https://youtube.com/shorts/Xb6EehdQ_Vk", "Canyon Drift", "alghandi/sm-canyon-drift"),
-                  v("https://youtube.com/shorts/Bs9r3HBlnBU", "Hummer Background Change", "alghandi/sm-hummer-background"),
-                  v("https://youtube.com/shorts/EgP6d972xOE", "Chevy Halloween", "alghandi/sm-chevy-halloween"),
+                  vd("https://youtube.com/shorts/eztoKq3vWGs", "Abarth B-Roll", "alghandi/sm-abarth-broll", "A beat-driven edit of Abarth footage in a framed vertical layout."),
+                  vd("https://youtube.com/shorts/Xb6EehdQ_Vk", "Canyon Drift", "alghandi/sm-canyon-drift", "A top-down drift sequence inside an Instagram-post mock-up."),
+                  vd("https://youtube.com/shorts/Bs9r3HBlnBU", "Hummer Background Change", "alghandi/sm-hummer-background", "A Hummer EV placed into a Dubai skyline road scene."),
+                  vd("https://youtube.com/shorts/EgP6d972xOE", "Chevy Halloween", "alghandi/sm-chevy-halloween", "A moody night-forest scene with animated \u201cListen\u2026\u201d typography."),
                 ],
               },
             ],
           },
           {
             title: "KV Animations",
-            body: ["Animated key visuals for the National Day campaign, built in landscape format."],
+            body: [
+              "Animated key visuals for the National Day campaign, bringing the Chevrolet and GMC line-ups to life in landscape format.",
+            ],
             media: [
               {
                 kind: "videos",
                 label: "KV Animations",
-                layout: "grid",
+                layout: "column",
                 items: [
                   v("https://youtu.be/Y7Q81fJGP5Y", "Chevy KV \u2013 National Day", "alghandi/kv-chevy-national-day"),
                   v("https://youtu.be/Z64cayj3Nlg", "GMC KV \u2013 National Day", "alghandi/kv-gmc-national-day"),
@@ -879,7 +929,7 @@ export const projects: Project[] = [
     logo: "logo/visit-sharjah",
     subtitle: "A look at the animation and motion work created for Visit Sharjah.",
     disciplines: ["3D & CGI", "Motion graphics"],
-    cover: { key: "sctda/social-miami", position: "50% 62%" },
+    cover: { key: "covers/sctda", position: "50% 65%" }, // SCTDA background image
     intro: [
       "Visit Sharjah is the official tourism platform promoting Sharjah\u2019s cultural experiences, heritage, nature, family activities, festivals, and attractions. Through engaging visual campaigns and digital content, the brand showcases Sharjah as a diverse and vibrant tourism destination.",
       "I have worked on multiple Visit Sharjah campaigns, contributing to visual communication and digital content that promotes Sharjah\u2019s destinations, experiences, events, and tourism offerings.",
@@ -1113,13 +1163,13 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Hero Videos",
-                layout: "feature",
+                layout: "cardgrid",
                 items: [
-                  v("https://youtu.be/_XAOG2Snt0w", "Flavour – Aura Series", "ceramic/hero-flavour-aura"),
-                  v("https://youtu.be/5PocSWqFqKY", "Lemzon – Tecnost", "ceramic/hero-lemzon-tecnost"),
-                  v("https://youtu.be/4DiPaHpF7Vk", "Lemzon – Limitless Space", "ceramic/hero-lemzon"),
-                  v("https://youtu.be/BLZ45KRzM1Q", "GGCL – Lucida", "ceramic/hero-ggcl-lucida"),
-                  v("https://youtube.com/shorts/epyKtTfsR-U", "Hindgres – River Connect", "ceramic/hero-hindgres-riverconnect"),
+                  vd("https://youtu.be/_XAOG2Snt0w", "Flavour – Aura Series", "ceramic/hero-flavour-aura", "Launch film for the Aura collection, with colourful 3D tiles merged into footage."),
+                  vd("https://youtu.be/5PocSWqFqKY", "Lemzon – Tecnost", "ceramic/hero-lemzon-tecnost", "Launch film for the Tecnost tile collection."),
+                  vd("https://youtu.be/4DiPaHpF7Vk", "Lemzon – Limitless Space", "ceramic/hero-lemzon", "A launch film built around the idea of limitless space."),
+                  vd("https://youtu.be/BLZ45KRzM1Q", "GGCL – Lucida", "ceramic/hero-ggcl-lucida", "Launch film for the Lucida collection."),
+                  vd("https://youtube.com/shorts/epyKtTfsR-U", "Hindgres – River Connect", "ceramic/hero-hindgres-riverconnect", "Launch film for the River Connect collection."),
                 ],
               },
             ],
@@ -1143,23 +1193,16 @@ export const projects: Project[] = [
             media: [
               {
                 kind: "videos",
-                label: "Social Media Assets",
-                layout: "grid",
+                layout: "cardgrid",
+                cols: 3,
                 items: [
-                  v("https://youtube.com/shorts/sk0uNryPKWo", "Cruso – Quartz", "ceramic/sm-cruso-quartz"),
-                  v("https://youtube.com/shorts/123eFEweRK0", "Evolution", "ceramic/sm-evolution"),
+                  vd("https://youtube.com/shorts/sk0uNryPKWo", "Cruso \u2013 Quartz", "ceramic/sm-cruso-quartz", "A new quartz collection reveal."),
+                  vd("https://youtube.com/shorts/123eFEweRK0", "Evolution", "ceramic/sm-evolution", "A short launch post for the Evolution collection."),
                   // ⚠ Links.txt lists "Grenic Elevation post 01 / 02" without saying which image is which — swap if reversed.
-                  v("https://youtube.com/shorts/RXfGuxcvJsg", "Grenic Elevation – Post 01", "ceramic/sm-grenic-post"),
-                  v("https://youtube.com/shorts/GzyvRmfliC8", "Grenic Elevation – Post 02", "ceramic/sm-grenic-elevation"),
-                  v("https://youtube.com/shorts/1Do8vdP--BI", "Grenic – Tile Collection", "ceramic/sm-grenic-tile-collection"),
-                ],
-              },
-              {
-                kind: "videos",
-                label: "Flavour Post",
-                layout: "grid",
-                items: [
-                  v("https://youtube.com/shorts/M8S8PS_WoDU", "Flavour – Post", "ceramic/sm-flavour-post"),
+                  vd("https://youtube.com/shorts/RXfGuxcvJsg", "Grenic Elevation \u2013 Post 01", "ceramic/sm-grenic-post", "3D elevation tiles dressed with dramatic lighting and music."),
+                  vd("https://youtube.com/shorts/GzyvRmfliC8", "Grenic Elevation \u2013 Post 02", "ceramic/sm-grenic-elevation", "A second elevation post in the same lighting-led style."),
+                  vd("https://youtube.com/shorts/1Do8vdP--BI", "Grenic \u2013 Tile Collection", "ceramic/sm-grenic-tile-collection", "3D wall tiles shown across the Grenic collection."),
+                  vd("https://youtube.com/shorts/M8S8PS_WoDU", "Flavour \u2013 Post", "ceramic/sm-flavour-post", "The first use of character animation in a ceramic post."),
                 ],
               },
             ],
@@ -1176,11 +1219,12 @@ export const projects: Project[] = [
   //   neutral placeholder (replace maya/showreel-placeholder with a real frame), and the tool chips.
   {
     slug: "maya-max-assignments",
-    name: "Maya & Max Assignments",
-    shortName: "Maya & Max",
-    subtitle: "3D modelling, rigging, animation and sketching assignments.",
+    name: "Showreel \u2013 Rajan Tarakhala",
+    shortName: "Showreel",
+    subtitle: "A reel of 3D modelling, rigging and animation work, plus assignment projects in Maya and 3ds Max.",
     disciplines: ["3D & CGI", "Motion graphics"],
-    cover: { key: "maya/farm-first-shot", position: "50% 50%" }, // wide frame suits the wide card slots; swap back to "covers/maya-max" for the page collage
+    cover: { key: "maya/showreel-placeholder", position: "50% 50%", fit: "contain" }, // same frame as the Showreel video card
+    coverHasTitle: true,
     intro: [
       "A collection of assignment work in Autodesk Maya and 3ds Max — a short story film, character and environment models, rigging and animation, and a sketchbook of animals and people.",
     ],
@@ -1189,7 +1233,7 @@ export const projects: Project[] = [
       {
         id: "farmer",
         tab: "The Farmer & Farm",
-        title: "Project 01 – The Farmer and Farm",
+        title: "The Farmer and Farm",
         sections: [
           {
             title: "Project Overview",
@@ -1220,21 +1264,40 @@ export const projects: Project[] = [
             media: [
               {
                 kind: "videos",
-                label: "The Farmer and Farm",
-                items: [v("https://youtu.be/kwDmyHMDDKU", "The Farmer and Farm", "maya/farm-first-shot")],
+                layout: "cards",
+                items: [vd("https://youtu.be/kwDmyHMDDKU", "The Farmer and Farm", "maya/farm-first-shot", "A short story film about a farmer\u2019s struggle, built around three rigged characters.")],
               },
             ],
           },
-          { title: "Tools Used", tools: ["Autodesk Maya", "3ds Max"] },
+          { title: "Tools Used", tools: ["Autodesk Maya", "3ds Max", "After Effects", "photoshop"] },
+        ],
+      },
+      {
+        id: "showreel",
+        tab: "Showreel",
+        title: "Showreel",
+        sections: [
+          {
+            title: "Showreel",
+            // ⚠ PLACEHOLDER description — replace with your own wording.
+            body: ["A short reel of my 3D modelling, rigging and animation work in Autodesk Maya and 3ds Max — characters, environments and the story film The Farmer and Farm."],
+            media: [
+              {
+                kind: "videos",
+                layout: "cards",
+                items: [vd("https://youtu.be/JEIytO481bI", "Showreel – Rajan Tarakhala", "maya/showreel-placeholder", "My 3D modelling, rigging and animation work in Maya and 3ds Max.")],
+              },
+            ],
+          },
         ],
       },
       {
         id: "sketching",
-        tab: "Sketching",
-        title: "Project 05 – Sketching",
+        tab: "Art and Sketching",
+        title: "Sketching",
         sections: [
           {
-            title: "Sketchbook",
+            title: "",
             body: ["Pencil and colour-pencil sketches of animals and people — anatomy studies, characters and portraits."],
             media: [
               {
@@ -1256,25 +1319,6 @@ export const projects: Project[] = [
                   { key: "maya/sketch-13", alt: "Sketch – flaming-head character holding the Earth, colour" },
                   { key: "maya/sketch-14", alt: "Sketch – portrait with sunglasses, pencil" },
                 ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "showreel",
-        tab: "Showreel",
-        title: "Showreel",
-        sections: [
-          {
-            title: "Showreel",
-            // ⚠ PLACEHOLDER description — replace with your own wording.
-            body: ["A short reel of my 3D modelling, rigging and animation work in Autodesk Maya and 3ds Max — characters, environments and the story film The Farmer and Farm."],
-            media: [
-              {
-                kind: "videos",
-                label: "Showreel – Rajan Tarakhala",
-                items: [v("https://youtu.be/JEIytO481bI", "Showreel – Rajan Tarakhala", "maya/showreel-placeholder")],
               },
             ],
           },

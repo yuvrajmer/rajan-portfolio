@@ -66,6 +66,9 @@ function HeroBackdrop() {
         aria-hidden
       >
         <source src="https://cdn.pixabay.com/video/2016/11/04/6266-190550868_large.mp4" type="video/mp4" />
+        {/* Fallbacks: only used if the remote reel is blocked or offline */}
+        <source src="/video/hero-reel.webm" type="video/webm" />
+        <source src="/video/hero-reel.mp4" type="video/mp4" />
       </video>
       {/* Heavy scrim — video stays a faint, subtle presence behind the copy, not the main visual */}
       <div className="absolute inset-0 bg-gradient-to-b from-bg/85 via-bg/70 to-bg" />

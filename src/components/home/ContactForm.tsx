@@ -213,6 +213,15 @@ export function ContactForm() {
         <p aria-live="polite" className="mt-7 text-[13px] text-faint">
           {caption}
         </p>
+        {status === "error" && (
+          <p role="alert" className="mt-2 text-[13px] text-ember">
+            Couldn't send just now. Please try again, or email me at{" "}
+            <a href={`mailto:${site.email}`} className="underline underline-offset-4">
+              {site.email}
+            </a>
+            .
+          </p>
+        )}
 
         <div className="mt-4">
           <Magnetic>

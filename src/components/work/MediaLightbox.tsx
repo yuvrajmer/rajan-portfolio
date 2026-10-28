@@ -190,6 +190,32 @@ export function MediaLightbox({
     return () => window.removeEventListener("keydown", key);
   }, [open, index, count, onIndex]);
 
+  // warm the cache for the next / previous item so browsing feels instant
+  useEffect(() => {
+    if (!open || count < 2) return;
+    [(index + 1) % count, (index - 1 + count) % count].forEach((i) => {
+      const it = items[i];
+      if (!it) return;
+      new Image().src = img(it.type === "video" ? it.thumb : it.key).src;
+    });
+  }, [open, index, count, items]);
+
+  // touch: swipe sideways on the stage to move between items
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touch.current;
+    touch.current = null;
+    if (!s || index === null || count < 2) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) onIndex((index + (dx < 0 ? 1 : -1) + count) % count);
+  };
+
   return (
     <Dialog.Root open={open} onOpenChange={(o) => !o && onClose()}>
       <Dialog.Portal>
@@ -227,6 +253,8 @@ export function MediaLightbox({
           <div
             className="relative flex min-h-0 flex-1 items-center justify-center px-4 sm:px-20"
             onClick={(e) => e.target === e.currentTarget && onClose()}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
           >
             {count > 1 && (
               <button

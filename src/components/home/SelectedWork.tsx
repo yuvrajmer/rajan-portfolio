@@ -179,7 +179,6 @@ function Panel({
   const facts = [
     videos > 0 && `${videos} videos`,
     campaigns > 0 && `${campaigns} campaigns`,
-    project.years,
   ].filter(Boolean) as string[];
 
   return (
