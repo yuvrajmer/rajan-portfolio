@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Play, ZoomIn } from "lucide-react";
 import { img, ratio } from "../../assets";
 import type { Still, Video } from "../../data/projects";
 
@@ -158,6 +159,141 @@ export function StillStrip({ label, items, onOpen }: { label: string; items: Sti
             );
           })}
       </StripSlider>
+    </figure>
+  );
+}
+
+/** A tiny, fixed set of tilts so the gallery feels like prints pinned on a board (they straighten on hover). */
+const TILTS = [-0.7, 0.5, -0.35, 0.8, -0.55, 0.4];
+
+/** One gallery image: pinned print that follows the pointer in 3D, with a soft light glare. */
+function GalleryTile({ s, i, reduce, onOpen }: { s: Still; i: number; reduce: boolean | null; onOpen: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const a = img(s.key);
+  const ar = a.width / a.height;
+  // "Sketch – Tyrion portrait, pencil" → "Tyrion portrait, pencil"
+  const title = s.alt.includes(" – ") ? s.alt.split(" – ").slice(1).join(" – ") : s.alt;
+
+  const move = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const el = ref.current;
+    if (!el || reduce || e.pointerType !== "mouse") return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--rx", `${((0.5 - y) * 7).toFixed(2)}deg`);
+    el.style.setProperty("--ry", `${((x - 0.5) * 9).toFixed(2)}deg`);
+    el.style.setProperty("--mx", `${(x * 100).toFixed(1)}%`);
+    el.style.setProperty("--my", `${(y * 100).toFixed(1)}%`);
+  };
+  const leave = () => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--rx", "0deg");
+    el.style.setProperty("--ry", "0deg");
+  };
+
+  return (
+    <motion.li
+      initial={reduce ? false : { opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -8% 0px" }}
+      transition={{ duration: 0.8, delay: (i % 3) * 0.09, ease: [0.16, 1, 0.3, 1] }}
+      className="min-w-0"
+      style={
+        {
+          perspective: 1000,
+          // justified rows: width follows the picture's shape, so every image in a row ends up the same height
+          flexGrow: ar,
+          flexBasis: `calc(${ar.toFixed(4)} * var(--row-h))`,
+          maxWidth: `calc(${ar.toFixed(4)} * var(--row-h) * 1.7)`,
+        } as CSSProperties
+      }
+    >
+      <button
+        ref={ref}
+        type="button"
+        onClick={onOpen}
+        onPointerMove={move}
+        onPointerLeave={leave}
+        onBlur={leave}
+        data-cursor="Zoom"
+        aria-label={`Enlarge: ${s.alt}`}
+        style={{ "--rot": `${TILTS[i % TILTS.length]}deg` } as CSSProperties}
+        className={[
+          "group relative block w-full overflow-hidden rounded-2xl bg-surface ring-1 ring-lav/20",
+          "shadow-[0_26px_50px_-34px_rgb(var(--sh)/.75)] outline-none",
+          "[transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_rotate(var(--rot))_scale(var(--s,1))]",
+          "transition-[transform,box-shadow,opacity,filter] duration-300 ease-out will-change-transform",
+          // hovering one print: it straightens, rises and glows while the rest quietly step back
+          "hover:z-10 hover:ring-2 hover:ring-lav/70 hover:shadow-[0_44px_80px_-34px_rgb(var(--c-lav)/.6)] hover:[--rot:0deg] hover:[--s:1.035]",
+          "focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-lav focus-visible:[--rot:0deg] focus-visible:[--s:1.035]",
+          "group-hover/gal:opacity-50 group-hover/gal:saturate-50 hover:!opacity-100 hover:!saturate-100",
+        ].join(" ")}
+      >
+        <span className="relative block overflow-hidden rounded-2xl">
+          <motion.span
+            className="block"
+            initial={reduce ? false : { scale: 1.18 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true, margin: "0px 0px -8% 0px" }}
+            transition={{ duration: 1.4, delay: (i % 3) * 0.09, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <img
+              src={a.src}
+              alt={s.alt}
+              width={a.width}
+              height={a.height}
+              loading="lazy"
+              draggable={false}
+              style={{ aspectRatio: a.width / a.height }}
+              className="block h-auto w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.07] group-focus-visible:scale-[1.07]"
+            />
+          </motion.span>
+
+          {/* light glare that follows the pointer */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-500 group-hover:opacity-100"
+            style={{ background: "radial-gradient(420px circle at var(--mx,50%) var(--my,0%), rgb(255 255 255 / .55), transparent 60%)" }}
+          />
+          <span
+            aria-hidden
+            className="surface-dark pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/85 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100"
+          />
+          <span className="surface-dark absolute right-3 top-3 grid h-9 w-9 scale-75 place-items-center rounded-full bg-lav text-bg opacity-0 transition-all duration-500 ease-back group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
+            <ZoomIn size={17} />
+          </span>
+          <span className="surface-dark absolute inset-x-0 bottom-0 translate-y-3 p-4 text-left font-display text-[15px] leading-snug text-ink opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+            <span className="mb-2 block h-px w-8 bg-ember" />
+            {title}
+          </span>
+        </span>
+      </button>
+    </motion.li>
+  );
+}
+
+/**
+ * Gallery layout for stills: every image is visible at once, laid out in justified rows — each row
+ * fills the full width, every image in a row shares one height, edges line up and nothing is cropped. Prints sit slightly tilted like a pinned sketchbook, rise and un-zoom
+ * as they scroll into view, follow the pointer in 3D on hover (with a light glare), and the others
+ * step back so the one you are looking at stands out. Click any image to open it large.
+ */
+export function StillGallery({ label, items, onOpen }: { label: string; items: Still[]; onOpen: (i: number) => void }) {
+  const reduce = useReducedMotion();
+  return (
+    <figure className="relative isolate mt-8">
+      {/* soft ambient glow behind the board */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-16 -inset-y-10 -z-10 bg-[radial-gradient(closest-side,rgb(var(--c-lav)/0.14),transparent)]"
+      />
+      <Caption>{label}</Caption>
+      <ul className="group/gal mt-5 flex flex-wrap gap-3.5 [--row-h:115px] after:grow-[9999] after:content-[''] sm:gap-5 sm:[--row-h:200px] lg:[--row-h:230px] 2xl:[--row-h:270px]">
+        {items.map((s, i) => (
+          <GalleryTile key={s.key} s={s} i={i} reduce={reduce} onOpen={() => onOpen(i)} />
+        ))}
+      </ul>
     </figure>
   );
 }

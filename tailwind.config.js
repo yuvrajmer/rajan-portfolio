@@ -17,8 +17,10 @@ export default {
         ember: token("ember"),
       },
       fontFamily: {
-        display: ["NeueMachina", "Manrope", "system-ui", "sans-serif"],
-        sans: ["Manrope", "system-ui", "sans-serif"],
+        // Both map to the single --font-sans token in src/styles/theme.css.
+        // `font-display` stays so existing headings keep working.
+        display: ["var(--font-sans)"],
+        sans: ["var(--font-sans)"],
       },
       borderRadius: {
         card: "18px",

@@ -4,13 +4,8 @@ import { Link } from "react-router-dom";
 import { useInView, useReducedMotion } from "framer-motion";
 import { img } from "../../assets";
 import {
-  campaignsOf,
   clients,
-  clientVideoCount,
   HOME_CLIENT_LIMIT,
-  projects,
-  videoCount,
-  VISIT_SHARJAH_CAMPAIGNS,
 } from "../../data/projects";
 import { cn } from "../../lib/cn";
 import { Reveal } from "../ui/Reveal";
@@ -19,7 +14,6 @@ import type { Project } from "../../data/projects";
 
 /** Milliseconds each company stays in the spotlight before the slider moves on by itself. */
 const INTERVAL = 6000;
-const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
  * Selected work — an expanding-panel slider.
@@ -29,10 +23,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * Which companies appear (and their order) lives in data/projects.ts → CLIENT_SLUGS.
  */
 export function SelectedWork() {
-  const campaignCount = VISIT_SHARJAH_CAMPAIGNS.length;
-  const visitSharjahVideos = projects
-    .filter((p) => (VISIT_SHARJAH_CAMPAIGNS as readonly string[]).includes(p.slug))
-    .reduce((n, p) => n + videoCount(p), 0);
 
   const items = clients.slice(0, HOME_CLIENT_LIMIT);
   const n = items.length;
@@ -68,8 +58,7 @@ export function SelectedWork() {
         <div>
           <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2.4rem,5.6vw,4.6rem)]">Selected work</h2>
           <p className="mt-5 max-w-[58ch] text-lg text-muted">
-            A long-running partnership with Visit Sharjah — spanning {campaignCount} campaigns and{" "}
-            {visitSharjahVideos} videos and reels, from logo reveals and CGI to full social campaigns — alongside
+            A long-running partnership with Visit Sharjah — spanning multiple campaigns, from logo reveals and CGI to full social campaigns — alongside
             CGI and social work for Continental, Nothing and Al Ghandi Auto, launch videos and posts for ceramic brands, and a set of 3D
             character and animation assignments.
           </p>
@@ -108,7 +97,7 @@ export function SelectedWork() {
         {/* Panels: a row on desktop, a stack on mobile — the open one takes most of the space */}
         <ul className="flex h-[560px] flex-col gap-3 sm:h-[600px] lg:h-[clamp(380px,calc(100vh_-_380px),540px)] lg:flex-row">
           {items.map((p, i) => (
-            <Panel key={p.slug} project={p} index={i} total={n} on={i === active} onSelect={() => go(i)} />
+            <Panel key={p.slug} project={p} on={i === active} onSelect={() => go(i)} />
           ))}
         </ul>
 
@@ -162,24 +151,14 @@ export function SelectedWork() {
 /** One company panel. Closed = a slim tab with its name; open = full artwork, stats and a call to action. */
 function Panel({
   project,
-  index,
-  total,
   on,
   onSelect,
 }: {
   project: Project;
-  index: number;
-  total: number;
   on: boolean;
   onSelect: () => void;
 }) {
   const cover = img(project.cover.key);
-  const videos = clientVideoCount(project);
-  const campaigns = campaignsOf(project).length;
-  const facts = [
-    videos > 0 && `${videos} videos`,
-    campaigns > 0 && `${campaigns} campaigns`,
-  ].filter(Boolean) as string[];
 
   return (
     <li
@@ -233,17 +212,13 @@ function Panel({
             on ? "pointer-events-none opacity-0 duration-200" : "opacity-100 delay-300 duration-500"
           )}
         >
-          {/* desktop: number on top, name running up the side */}
-          <span className="absolute left-1/2 top-6 hidden -translate-x-1/2 font-display text-[15px] tabular-nums text-ink/70 lg:block">
-            {pad(index + 1)}
-          </span>
+          {/* desktop: name running up the side */}
           <span className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 rotate-180 whitespace-nowrap font-display text-[1.25rem] tracking-wide text-ink [writing-mode:vertical-rl] lg:block">
             {project.shortName}
           </span>
           {/* mobile: a simple row */}
           <div className="absolute inset-0 flex items-center justify-between gap-4 px-5 lg:hidden">
             <span className="font-display text-[1.1rem] text-ink">{project.shortName}</span>
-            <span className="font-display text-[14px] tabular-nums text-ink/70">{pad(index + 1)}</span>
           </div>
         </div>
 
@@ -256,22 +231,9 @@ function Panel({
         >
           <div className="flex items-start justify-between gap-4">
             <LogoPlate project={project} />
-            <span className="font-display text-[1.05rem] tabular-nums text-ink/85">
-              {pad(index + 1)}
-              <span className="text-ink/45"> / {pad(total)}</span>
-            </span>
           </div>
 
           <div className="w-full">
-            {facts.length > 0 && (
-              <div className="mb-4 flex flex-wrap gap-2">
-                {facts.map((f) => (
-                  <span key={f} className="rounded-full border border-white/20 bg-bg/40 px-3 py-1 text-[12.5px] font-medium text-ink/90 backdrop-blur">
-                    {f}
-                  </span>
-                ))}
-              </div>
-            )}
             <div className="flex items-end justify-between gap-5">
               <div className="min-w-0 lg:max-w-[600px]">
                 <h3 className="font-display text-[clamp(1.7rem,3.4vw,3rem)] leading-[1.02] text-ink">{project.name}</h3>

@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { getProject, siblingsOf, videoCount, type Project as ProjectT, type Still, type Video } from "../data/projects";
+import { getProject, siblingsOf, type Project as ProjectT, type Still, type Video } from "../data/projects";
 import { useDocumentMeta } from "../lib/hooks";
 import { Chip } from "../components/ui/Chip";
 import { Reveal } from "../components/ui/Reveal";
@@ -28,8 +28,11 @@ function ProjectView({ project }: { project: ProjectT }) {
   useDocumentMeta(`${project.name} — Rajan Tarakhala`, project.subtitle);
 
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
+  // Back goes to whichever page the visitor came from (home slider, All work, another project…).
+  // If the page was opened directly (no history), it falls back to the All work page.
+  const goBack = () => (window.history.state?.idx > 0 ? navigate(-1) : navigate("/works"));
   const chapter = project.chapters.find((c) => c.id === params.get("tab")) ?? project.chapters[0];
-  const n = videoCount(project);
 
   const [box, setBox] = useState<{ items: LightboxItem[]; index: number } | null>(null);
 
@@ -42,7 +45,7 @@ function ProjectView({ project }: { project: ProjectT }) {
   }, []);
 
   const rail = useMemo(
-    () => (chapter ? chapter.sections.map((s) => ({ id: sectionId(chapter, s), title: s.title })) : []),
+    () => (chapter ? chapter.sections.map((s) => ({ id: sectionId(chapter, s), title: s.title || chapter.title })) : []),
     [chapter]
   );
   const others = siblingsOf(project.slug);
@@ -50,10 +53,14 @@ function ProjectView({ project }: { project: ProjectT }) {
   return (
     <>
       <header className="container-page pb-16 pt-[calc(var(--nav-h)+44px)]">
-        <Link to="/works" className="group inline-flex items-center gap-2 text-[15px] text-muted transition-colors hover:text-ink">
+        <button
+          type="button"
+          onClick={goBack}
+          className="group inline-flex items-center gap-2 text-[15px] text-muted transition-colors hover:text-ink"
+        >
           <ArrowLeft size={16} className="transition-transform duration-300 ease-back group-hover:-translate-x-1" />
-          All work
-        </Link>
+          Back
+        </button>
 
         <div className="mt-12 flex flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -66,7 +73,6 @@ function ProjectView({ project }: { project: ProjectT }) {
 
           <dl className="flex flex-wrap gap-x-12 gap-y-6">
             {project.years && <Meta label="Years">{project.years}</Meta>}
-            {n > 0 && <Meta label="Videos & reels">{n}</Meta>}
             <div>
               <dt className="text-[13.5px] font-medium text-faint">Disciplines</dt>
               <dd className="mt-2.5 flex max-w-[300px] flex-wrap gap-2">

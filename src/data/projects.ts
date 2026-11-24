@@ -9,7 +9,8 @@ export type Still = { key: ImageKey; alt: string };
 export type MediaGroup =
   /** layout: "slider" (default sideways strip) · "feature" (big player + playlist) · "grid" (all visible, no sliding) · "cards" (video cards with title + description underneath) · "column" (videos stacked one under another) · "cardgrid" (video cards, 2 per row, no sliding) */
   | { kind: "videos"; label?: string; items: Video[]; /** "cardgrid" only: videos per row on desktop (default 2) */ cols?: 2 | 3; layout?: "slider" | "feature" | "grid" | "cards" | "carousel" | "column" | "cardgrid" }
-  | { kind: "stills"; label: string; items: Still[] }
+  /** layout: "strip" (default sideways slider) · "gallery" (every image visible in rows and columns, no sliding) */
+  | { kind: "stills"; label: string; items: Still[]; layout?: "strip" | "gallery" }
   | { kind: "logo-morph" };
 
 export type Section = {
@@ -248,7 +249,9 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Logo Reveal / Final Video",
-                items: [v("https://youtu.be/M6LVXMy65d8", "SCTDA Logo Reveal", "sctda/logo-reveal")],
+                layout: "cards",
+                // desc: taken from the project overview above — edit if you want different wording
+                items: [vd("https://youtu.be/M6LVXMy65d8", "SCTDA Logo Reveal", "sctda/logo-reveal", "Three static logo designs transformed into one seamless reveal.")],
               },
             ],
           },
@@ -275,11 +278,13 @@ export const projects: Project[] = [
             media: [
               {
                 kind: "videos",
+                layout: "cards",
+                // PLACEHOLDER descriptions (based only on each title) — replace with your own wording
                 items: [
-                  v("https://youtube.com/shorts/GVPOBJ97Uv0", "Sharjah National Day", "sctda/social-national-day"),
-                  v("https://youtube.com/shorts/AaV6PF2QLzk", "Heerji New Year 2025", "sctda/social-heerji"),
-                  v("https://youtube.com/shorts/HILR_3RfhTg", "Visit Sharjah Miami Vibes Story", "sctda/social-miami"),
-                  v("https://youtube.com/shorts/ui0CfGZ1Isw", "Sharjah Tourism WTM London", "sctda/social-wtm"),
+                  vd("https://youtube.com/shorts/GVPOBJ97Uv0", "Sharjah National Day", "sctda/social-national-day", "Social media post for Sharjah National Day."),
+                  vd("https://youtube.com/shorts/AaV6PF2QLzk", "Heerji New Year 2025", "sctda/social-heerji", "Festival post for Heerji New Year 2025."),
+                  vd("https://youtube.com/shorts/HILR_3RfhTg", "Visit Sharjah Miami Vibes Story", "sctda/social-miami", "Visit Sharjah story for the Miami Vibes district."),
+                  vd("https://youtube.com/shorts/ui0CfGZ1Isw", "Sharjah Tourism WTM London", "sctda/social-wtm", "Sharjah Tourism content for WTM London."),
                 ],
               },
             ],
@@ -290,7 +295,9 @@ export const projects: Project[] = [
               {
                 kind: "videos",
                 label: "Get the License Out — Sharjah",
-                items: [v("https://youtu.be/g5NwLQANK9s", "Get the License Out Sharjah", "sctda/tourism-license")],
+                layout: "cards",
+                // PLACEHOLDER description — replace with your own wording
+                items: [vd("https://youtu.be/g5NwLQANK9s", "Get the License Out Sharjah", "sctda/tourism-license", "Tourism promotional video for Sharjah, with CGI shots.")],
               },
             ],
           },
@@ -1302,6 +1309,7 @@ export const projects: Project[] = [
             media: [
               {
                 kind: "stills",
+                layout: "gallery",
                 label: "Sketches",
                 items: [
                   { key: "maya/sketch-01", alt: "Sketch – Tyrion portrait, pencil" },

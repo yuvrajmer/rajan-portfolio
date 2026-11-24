@@ -10,6 +10,8 @@
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--nav-h) + 16px);
     -webkit-text-size-adjust: 100%;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-bg text-ink font-sans antialiased;
@@ -31,6 +33,7 @@
     outline-offset: 3px;
     border-radius: 6px;
   }
+  button, input, textarea, select { font-family: inherit; }
   button { cursor: pointer; }
   img { -webkit-user-drag: none; }
 }
@@ -135,7 +138,7 @@
 }
 .cmdk-content [cmdk-input] {
   flex: 1; height: 60px; background: transparent; border: 0; outline: 0;
-  font: 500 17px/1 Manrope, system-ui, sans-serif; color: rgb(var(--c-ink));
+  font: 500 17px/1 var(--font-sans); color: rgb(var(--c-ink));
 }
 .cmdk-content [cmdk-input]::placeholder { color: rgb(var(--c-faint)); }
 .cmdk-content [cmdk-list] { max-height: min(56vh, 420px); overflow-y: auto; padding: 8px; }

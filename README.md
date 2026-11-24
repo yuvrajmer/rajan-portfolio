@@ -23,9 +23,10 @@ Requires Node 18+.
 2. **Social links** — `src/data/site.ts` → `socials`. Empty by default; add
    `{ label: "Instagram", href: "https://instagram.com/…" }` entries and they
    appear automatically in the footer and contact section.
-3. **Fonts** — the display typeface (NeueMachina) ships in `public/fonts/`.
-   Confirm your license covers the way it's used here before you publish
-   publicly; swap the `@font-face` block in `src/styles/theme.css` if needed.
+3. **Fonts** — the whole site uses one typeface, **Gilroy (FREE edition: Light + ExtraBold only)** (variable, self-hosted in
+   `public/fonts/gilroy/`, licence: Radomir Tinkov Free Font EULA - keep the font files out of public repos). To change it, edit the
+   `@font-face` block and the `--font-sans` token at the top of
+   `src/styles/theme.css` — nothing else references a font name.
 
 ## Where things live
 

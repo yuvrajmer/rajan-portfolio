@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { img } from "../../assets";
-import { videoCount, type Project } from "../../data/projects";
+import type { Project } from "../../data/projects";
 import { cn } from "../../lib/cn";
 
 /** Logo on a light plate — keeps every brand legible on the dark theme. */
@@ -26,7 +26,6 @@ export function LogoPlate({ project, className, large }: { project: Project; cla
 
 export function WorkCard({ project, className }: { project: Project; className?: string }) {
   const cover = img(project.cover.key);
-  const n = videoCount(project);
   return (
     <Link to={`/work/${project.slug}`} data-cursor="View" className={cn("group block", className)}>
       <div className="surface-dark relative aspect-[4/5] overflow-hidden rounded-card border border-lav/15 bg-surface">
@@ -50,7 +49,6 @@ export function WorkCard({ project, className }: { project: Project; className?:
           </h3>
           <p className="mt-2 max-w-[38ch] text-[14.5px] leading-relaxed text-muted">{project.subtitle}</p>
         </div>
-        {n > 0 && <span className="mt-1.5 shrink-0 text-[13px] font-medium text-faint">{n} videos</span>}
       </div>
     </Link>
   );

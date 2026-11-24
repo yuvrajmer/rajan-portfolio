@@ -161,15 +161,13 @@
 
 
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Check, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, ArrowUpRight, Check, ChevronDown } from "lucide-react";
 import { img } from "../assets";
 import {
-  campaignsOf,
   clientDisciplines,
   clients,
-  clientVideoCount,
   DISCIPLINES,
   type Discipline,
   type Project,
@@ -181,32 +179,15 @@ import { LogoPlate } from "../components/ui/WorkCard";
 type Filter = "All" | Discipline;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const pad = (n: number) => String(n).padStart(2, "0");
-
-/** Number that counts up once when it scrolls into view. */
-function Count({ to }: { to: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const seen = useInView(ref, { once: true });
-  const reduce = useReducedMotion();
-  const [v, setV] = useState(reduce ? to : 0);
-  useEffect(() => {
-    if (!seen || reduce) return;
-    const c = animate(0, to, { duration: 1.4, ease: EASE, onUpdate: (x) => setV(Math.round(x)) });
-    return () => c.stop();
-  }, [seen, to, reduce]);
-  return <span ref={ref}>{v}</span>;
-}
 
 /** Discipline filter as a simple dropdown (closes on outside click / Esc / pick). */
 function FilterMenu({
   value,
   options,
-  count,
   onChange,
 }: {
   value: Filter;
   options: Filter[];
-  count: (f: Filter) => number;
   onChange: (f: Filter) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -242,7 +223,6 @@ function FilterMenu({
         <span className="flex items-center gap-2.5">
           <span className="text-faint">Discipline</span>
           <span className="text-ink">{value}</span>
-          <span className="rounded-full bg-lav/15 px-2 py-0.5 text-[12px] tabular-nums text-muted">{count(value)}</span>
         </span>
         <ChevronDown size={17} className={cn("shrink-0 text-muted transition-transform duration-300", open && "rotate-180")} />
       </button>
@@ -277,7 +257,6 @@ function FilterMenu({
                       <Check size={15} className={cn("text-lav", on ? "opacity-100" : "opacity-0")} />
                       {f}
                     </span>
-                    <span className="text-[12.5px] tabular-nums text-faint">{count(f)}</span>
                   </button>
                 </li>
               );
@@ -293,11 +272,8 @@ function FilterMenu({
  * Company card. At rest: cover image with the company name and its campaign / video counts.
  * On hover: the dark view fades in — dimmed cover, big logo, description, number and arrow.
  */
-function GridCard({ project, index }: { project: Project; index: number }) {
+function GridCard({ project }: { project: Project }) {
   const cover = img(project.cover.key);
-  const campaigns = campaignsOf(project).length;
-  const videos = clientVideoCount(project);
-  const meta = [campaigns > 0 && `${campaigns} campaigns`, videos > 0 && `${videos} videos`].filter(Boolean);
   return (
     <Link to={`/work/${project.slug}`} data-cursor="View" className="group block outline-none">
       <div className="surface-dark relative flex aspect-[4/5] flex-col overflow-hidden rounded-[28px] border border-lav/20 bg-bg shadow-[0_30px_70px_-40px_rgb(var(--sh)/.6)] transition-all duration-500 ease-out group-hover:-translate-y-1.5 group-hover:border-lav/60 group-focus-visible:-translate-y-1.5 group-focus-visible:border-lav/60">
@@ -323,8 +299,7 @@ function GridCard({ project, index }: { project: Project; index: number }) {
         />
 
         {/* hover: number + arrow */}
-        <div className="relative z-10 flex items-center justify-between p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
-          <span className="font-display text-[1.05rem] tabular-nums text-ink/70">{pad(index + 1)}</span>
+        <div className="relative z-10 flex items-center justify-end p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
           <span className="grid h-11 w-11 place-items-center rounded-full bg-lav text-bg transition-transform duration-500 ease-back group-hover:rotate-45">
             <ArrowUpRight size={19} />
           </span>
@@ -347,11 +322,6 @@ function GridCard({ project, index }: { project: Project; index: number }) {
               <span className="line-clamp-2 block pt-2">{project.subtitle}</span>
             </p>
           </div>
-          {meta.length > 0 && (
-            <p className="mt-3 text-[13px] text-ink/75 transition-colors duration-500 group-hover:border-t group-hover:border-ink/10 group-hover:pt-3.5 group-hover:text-[12.5px] group-hover:uppercase group-hover:tracking-[0.12em] group-hover:text-ink/55">
-              {meta.join("  ·  ")}
-            </p>
-          )}
         </div>
       </div>
     </Link>
@@ -364,10 +334,12 @@ export default function Works() {
     `Companies Rajan Tarakhala has worked with: ${clients.map((c) => c.name).join(", ")}.`
   );
 
+  const navigate = useNavigate();
+  // Back goes to the page the visitor came from; if this page was opened directly, it goes to the home page.
+  const goBack = () => (window.history.state?.idx > 0 ? navigate(-1) : navigate("/"));
+
   const [filter, setFilter] = useState<Filter>("All");
   const list = filter === "All" ? clients : clients.filter((p) => clientDisciplines(p).includes(filter));
-  const count = (f: Filter) => (f === "All" ? clients.length : clients.filter((p) => clientDisciplines(p).includes(f)).length);
-  const totalVideos = clients.reduce((n, p) => n + clientVideoCount(p), 0);
 
   return (
     <div className="relative overflow-x-clip pb-32 pt-[calc(var(--nav-h)+56px)]">
@@ -379,15 +351,15 @@ export default function Works() {
         {/* Hero */}
         <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
           <div>
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: EASE }}
-              className="inline-flex items-center gap-2.5 text-[13px] uppercase tracking-[0.18em] text-muted"
+            <button
+              type="button"
+              onClick={goBack}
+              className="group inline-flex items-center gap-2 text-[15px] text-muted transition-colors hover:text-ink"
             >
-              <span className="h-px w-8 bg-ember" /> Portfolio
-            </motion.p>
-            <h1 className="mt-5 overflow-hidden font-display text-[clamp(3.4rem,10vw,8.5rem)] leading-[0.94] tracking-[-0.045em]">
+              <ArrowLeft size={16} className="transition-transform duration-300 ease-back group-hover:-translate-x-1" />
+              Back
+            </button>
+            <h1 className="mt-8 overflow-hidden font-display text-[clamp(3.4rem,10vw,8.5rem)] leading-[0.94] tracking-[-0.045em]">
               <motion.span
                 initial={{ y: "105%" }}
                 animate={{ y: 0 }}
@@ -407,34 +379,11 @@ export default function Works() {
             </motion.p>
           </div>
 
-          <motion.dl
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35, ease: EASE }}
-            className="flex gap-10 lg:gap-12"
-          >
-            {[
-              { label: "Companies", value: clients.length },
-              { label: "Videos", value: totalVideos },
-              { label: "Disciplines", value: DISCIPLINES.length },
-            ].map((s) => (
-              <div key={s.label}>
-                <dd className="font-display text-[clamp(2.4rem,4.5vw,3.6rem)] leading-none tabular-nums">
-                  <Count to={s.value} />
-                </dd>
-                <dt className="mt-2 text-[12px] uppercase tracking-[0.14em] text-faint">{s.label}</dt>
-              </div>
-            ))}
-          </motion.dl>
         </div>
 
         {/* Filter */}
         <div className="mt-14 flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-          <FilterMenu value={filter} options={["All", ...DISCIPLINES] as Filter[]} count={count} onChange={setFilter} />
-          <p className="text-[14px] text-faint" aria-live="polite">
-            Showing <span className="tabular-nums text-muted">{list.length}</span> of{" "}
-            <span className="tabular-nums text-muted">{clients.length}</span> companies
-          </p>
+          <FilterMenu value={filter} options={["All", ...DISCIPLINES] as Filter[]} onChange={setFilter} />
         </div>
 
         {/* Companies */}
@@ -451,7 +400,7 @@ export default function Works() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5, delay: (i % 3) * 0.06, ease: EASE }}
                   >
-                    <GridCard project={p} index={i} />
+                    <GridCard project={p} />
                   </motion.li>
                 ))}
               </AnimatePresence>

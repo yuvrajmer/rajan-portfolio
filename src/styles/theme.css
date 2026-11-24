@@ -14,21 +14,34 @@
    opacity (e.g. bg-lav/20). Change a value here → whole site updates.
    ============================================================ */
 
+/* ---------- Typeface: Gilroy FREE (self-hosted) ----------
+   Radomir Tinkov's free edition ships only TWO weights: Light and ExtraBold.
+   The ranges below make the fallback explicit instead of leaving it to chance:
+     weights 100-500 (body copy, font-medium headings)  -> Light
+     weights 600-900 (font-semibold / font-bold)        -> ExtraBold
+   `font-synthesis: none` (index.css) stops browsers from faking in-between weights.
+   Want true Regular / Medium / SemiBold? Buy the full Gilroy family, drop the files in
+   public/fonts/gilroy/ and add one @font-face per weight here.
+   Licence: Radomir Tinkov Free Font EULA - web use via @font-face allowed (clause h);
+   do not modify the font or publish the font files in a public repo (see Gilroy-FREE-EULA.pdf). */
 @font-face {
-  font-family: "NeueMachina";
-  font-weight: 400;
+  font-family: "Gilroy";
   font-style: normal;
-  src: url("/fonts/NeueMachina-Regular.woff2") format("woff2"),
-    url("/fonts/NeueMachina-Regular.woff") format("woff");
+  font-weight: 100 500;
   font-display: swap;
+  src: url("/fonts/gilroy/Gilroy-Light.woff2") format("woff2");
 }
 @font-face {
-  font-family: "NeueMachina";
-  font-weight: 500 700;
+  font-family: "Gilroy";
   font-style: normal;
-  src: url("/fonts/NeueMachina-Medium.woff2") format("woff2"),
-    url("/fonts/NeueMachina-Medium.woff") format("woff");
+  font-weight: 600 900;
   font-display: swap;
+  src: url("/fonts/gilroy/Gilroy-ExtraBold.woff2") format("woff2");
+}
+
+:root {
+  /* Typography — the ONE place the site's typeface is named (used by Tailwind + plain CSS) */
+  --font-sans: "Gilroy", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 :root,
